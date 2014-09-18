@@ -1,0 +1,54 @@
+=========================================================================
+The source code that makes up The Apache Open For Business Project
+(Apache OFBiz) and the majority of the libraries distributed with it are
+licensed under the Apache License Version 2.0.
+
+Other licenses used by libraries distributed with Apache OFBiz are listed
+below. This file includes a list of all libraries distributed with Apache
+OFBiz and the full text of the license used for each.
+
+For additional details, see the NOTICE file.
+=========================================================================
+The following libraries are licensed under the Apache License Version 2.0:
+http://jasny.github.io/bootstrap/javascript/
+http://www.bootstrap-switch.org/
+https://github.com/coordt/django-elrte/
+
+The following libraries are licensed under The MIT License:
+http://angularjs.org
+http://getbootstrap.com
+http://getbootstrap.com/javascript/#modals
+http://getbootstrap.com/javascript/#carousel
+http://codemirror.net
+http://www.ryancramer.com/projects/asmselect/
+http://trentrichardson.com/examples/timepicker/
+http://www.appelsiini.net/projects/jeditable
+http://jstree.com/
+http://digitalbush.com/projects/masked-input-plugin
+http://api.jqueryui.com/datepicker/
+http://jquery.com/
+http://jqueryui.com/
+http://dev7studios.com/plugins/caroufredsel
+http://harvesthq.github.io/chosen/
+https://github.com/meltingice/ajax-chosen
+https://github.com/christianreed/Credit-Card-Type-Detector
+http://www.datatables.net
+http://www.elevateweb.co.uk/image-zoom
+http://fancybox.net/
+http://fixedheadertable.com
+http://www.flotcharts.org/
+http://malsup.com/jquery/form/
+http://foundation.zurb.com/docs/components/joyride.html
+http://areaaperta.com/nicescroll/
+http://www.fyneworks.com/jquery/star-rating/
+http://tablesorter.com/docs/
+http://rommelsantor.com/jquery/thfloat/
+http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+http://lesscss.org
+http://github.hubspot.com/pace/docs/welcome/
+http://jedfoster.com/Readmore.js/
+http://andersonferminiano.com/jqueryscrollpagination/
+https://github.com/oma/table-fixed-header
+http://welldonethings.com/tags/manager
+http://underscorejs.org
+http://www.foxjunior.eu/jquerytimer/ or http://code.google.com/p/jquerytimer/

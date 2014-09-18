@@ -1,0 +1,118 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('../fonts/icomoon.eot');
+	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/icomoon.woff') format('woff'),
+		url('../fonts/icomoon.ttf') format('truetype'),
+		url('../fonts/icomoon.svg#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-chart:before {
+	content: "\e601";
+}
+.icon-chart2:before {
+	content: "\e602";
+}
+.icon-chart3:before {
+	content: "\e603";
+}
+.icon-chart4:before {
+	content: "\e604";
+}
+.icon-chart5:before {
+	content: "\e605";
+}
+.icon-chart6:before {
+	content: "\e606";
+}
+.icon-stats:before {
+	content: "\e607";
+}
+.icon-stats2:before {
+	content: "\e608";
+}
+.icon-graph:before {
+	content: "\e614";
+}
+.icon-bars3:before {
+	content: "\e615";
+}
+.icon-chart-pie:before {
+	content: "\e616";
+}
+.icon-chart-line:before {
+	content: "\e617";
+}
+.icon-chart-bar:before {
+	content: "\e618";
+}
+.icon-chart-area:before {
+	content: "\e619";
+}
+.icon-chart-pie-outline:before {
+	content: "\e61a";
+}
+.icon-chart-line-outline:before {
+	content: "\e61b";
+}
+.icon-chart-bar-outline:before {
+	content: "\e61c";
+}
+.icon-chart-area-outline:before {
+	content: "\e61d";
+}
+.icon-chart9:before {
+	content: "\e61e";
+}
+.icon-pie:before {
+	content: "\e600";
+}
+.icon-stats:before {
+	content: "\e60a";
+}
+.icon-bars:before {
+	content: "\e60b";
+}
+.icon-bars2:before {
+	content: "\e60c";
+}
+.icon-chart-alt:before {
+	content: "\e60d";
+}
+.icon-chart7:before {
+	content: "\e60e";
+}
+.icon-chart8:before {
+	content: "\e60f";
+}
+.icon-stats2:before {
+	content: "\e610";
+}
+.icon-insertbarchart:before {
+	content: "\e611";
+}
+.icon-barchart:before {
+	content: "\e612";
+}
+.icon-insertpiechart:before {
+	content: "\e613";
+}
+.icon-awstats:before {
+	content: "\e609";
+}

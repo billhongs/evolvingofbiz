@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="UifDecorator">
+        <section>
+            <actions>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootstrap-3.1.1.min.css"/>
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootstrap-modal-bs3patch.css"/>
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootstrap-modal.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/font-awesome.min.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/icomoon.css"/>
+                <set field="styleSheets[]" value="/uif/css/jquery/jquery-ui-1.8.23.custom.css"/>
+                <set field="styleSheets[]" value="/uif/css/jquery/jquery-ui-1.10.0.custom.css"/>
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootmetro-tiles.css"/>
+                <set field="styleSheets[]" value="/uif/css/jquery/jquery.elrte-1.3.css"/>
+                <set field="styleSheets[]" value="/uif/css/custom.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/animate.min.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/chosen-0.10.0.css"/>
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootstrap-fileupload.min.css"/>
+                <set field="styleSheets[]" value="/uif/js/jquery/plugins/asmselect/jquery.asmselect-1.0.4a-beta.css" global="true"/>
+                <set field="styleSheets[]" value="/uif/css/bootstrap/bootstrap-switch.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/carouFredSel-6.2.1.css"/>
+                <set field="styleSheets[]" value="/uif/css/tpl/tagmanager.css"/>
+
+                <!--    Codemirror CSS      -->
+                <set field="styleSheets[]" value="/uif/js/codemirror/lib/codemirror.css"/>
+                <set field="styleSheets[]" value="/uif/js/codemirror/addon/hint/show-hint.css"/>
+
+                <set field="initialLocaleComplete" type="String" value="${groovy:parameters?.userLogin?.lastLocale}" default-value="${groovy:locale.toString()}"/>
+                <set field="javaScripts[+0]" value="${groovy: org.ofbiz.common.JsLanguageFilesMapping.datejs.getFilePath(initialLocaleComplete)}" global="true"/>
+                <set field="javaScripts[+0]" value="${groovy: org.ofbiz.common.JsLanguageFilesMapping.jquery.getFilePath(initialLocaleComplete)}" global="true"/>
+                <set field="javaScripts[+0]" value="${groovy: org.ofbiz.common.JsLanguageFilesMapping.validation.getFilePath(initialLocaleComplete)}" global="true"/>
+                <set field="javaScripts[+0]" value="${groovy: org.ofbiz.common.JsLanguageFilesMapping.dateTime.getFilePath(initialLocaleComplete)}" global="true"/>
+
+                <set field="javaScripts[+0]" value="/uif/js/jquery/plugins/asmselect/jquery.asmselect-1.0.4a-beta.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/plugins/datetimepicker/jquery-ui-timepicker-addon-1.0.5.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/plugins/jquery.maskedinput-1.2.2.min.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/jquery-ui-1.8.23.custom.min.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/plugins/jeditable/jquery.jeditable.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/plugins/fjTimer/jquerytimer-min.js" global="true"/>
+                <set field="javaScripts[+0]" value="/uif/js/jquery/ui/development-bundle/ui/jquery.ui.datepicker.js" global="true"/>
+
+                <set field="javaScripts[+0]" value="/uif/js/jquery/jquery-1.8.0.min.js" global="true"/>
+                <set field="javaScripts[+1]" value="/uif/js/jquery/jquery.form-3.18.js" global="true"/>
+                <set field="javaScripts[+2]" value="/uif/js/jquery/jquery.dataTables-1.9.2.js" global="true"/>
+                <set field="javaScripts[+3]" value="/uif/js/jquery/jquery.chosen-0.10.0.min.js" global="true"/>
+                <set field="javaScripts[+4]" value="/uif/js/UifInitScreen.js" global="true"/>
+                <set field="javaScripts[+5]" value="/uif/js/bootstrap/bootstrap-3.1.1.min.js" global="true"/>
+                <set field="javaScripts[+6]" value="/uif/js/bootstrap/bootstrap-modalmanager.js" global="true"/>
+                <set field="javaScripts[+7]" value="/uif/js/bootstrap/bootstrap-modal.js" global="true"/>
+                <set field="javaScripts[+8]" value="/uif/js/bootstrap/bootstrap-fileupload.min.js" global="true"/>
+                <set field="javaScripts[+9]" value="/uif/js/jquery/jquery.rating.js" global="true"/>
+                <set field="javaScripts[+10]" value="/uif/js/jquery/jquery.validate.js" global="true"/>
+                <set field="javaScripts[+11]" value="/uif/js/tpl/scrollpagination.js" global="true"/>
+                <set field="javaScripts[+12]" value="/uif/js/jquery/jquery.elrte-1.3.min.js" global="true"/>
+                <set field="javaScripts[+13]" value="/uif/js/tpl/table-fixed-header.js" global="true"/>
+                <set field="javaScripts[+14]" value="/uif/js/jquery/jquery.fixedheadertable-3.0.4.js" global="true"/>
+                <set field="javaScripts[+15]" value="/uif/js/jquery/jquery.joyride-2.0.3.js" global="true"/>
+                <set field="javaScripts[+16]" value="/uif/js/jquery/jquery.flot.min.js" global="true"/>
+                <set field="javaScripts[+17]" value="/uif/js/bootstrap/bootstrap-switch.min.js" global="true"/>
+                <set field="javaScripts[+18]" value="/uif/js/jquery/jquery.thfloat-0.7.2.min.js" global="true"/>
+                <set field="javaScripts[+19]" value="/uif/js/jquery/jQuery.ajax-chosen.min.js" global="true"/>
+                <set field="javaScripts[+20]" value="/uif/js/jquery/jquery.carouFredSel-6.2.1-packed.js" global="true"/>
+                <set field="javaScripts[+21]" value="/uif/js/jquery/jquery.flot.selection.min.js" global="true"/>
+                <set field="javaScripts[+22]" value="/uif/js/jquery/jquery.creditCardTypeDetector.js" global="true"/>
+                <set field="javaScripts[+23]" value="/uif/js/tpl/tagmanager.js" global="true"/>
+                <set field="javaScripts[+24]" value="/uif/js/jquery/jquery.nicescroll.min.js" global="true"/>
+                <set field="javaScripts[+25]" value="/uif/js/tpl/readmore.min.js" global="true"/>
+                <set field="javaScripts[+26]" value="/uif/js/jquery/jquery.tablesorter.min.js" global="true"/>
+
+                <!--    Code Mirror javascripts  -->
+                <set field="javaScripts[]" value="/uif/js/codemirror/lib/codemirror.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/hint/show-hint.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/hint/xml-hint.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/hint/html-hint.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/hint/freemarker-hint.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/selection/active-line.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/addon/mode/overlay.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/mode/xml/xml.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/mode/javascript/javascript.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/mode/css/css.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/mode/htmlmixed/htmlmixed.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/codemirror/mode/freemarker/freemarker.js" global="true"/>
+
+                <!--    angular javascripts  -->
+                <set field="javaScripts[]" value="/uif/js/angular/angular.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-animate.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-cookies.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-loader.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-resource.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-route.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-sanitize.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/angular/angular-touch.min.js" global="true"/>
+                <set field="javaScripts[]" value="/uif/js/EnterpriseSearch.js" global="true"/>
+            </actions>
+            <widgets>
+                 <platform-specific><html><html-template location="${preBodyLocation}"/></html></platform-specific>
+                <decorator-section-include name="pre-body"/>
+                <decorator-section-include name="body"/>
+                <platform-specific><html><html-template location="${postBodyLocation}"/></html></platform-specific>
+            </widgets>
+        </section>
+    </screen>
+</screens>

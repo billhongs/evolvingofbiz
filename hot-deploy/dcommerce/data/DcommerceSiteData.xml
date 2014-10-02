@@ -188,7 +188,7 @@ under the License.
 
     <!-- add Slider to the home page --> 
     <!-- Create slider content with a content type as MEDIA, associate it to main page content with a mapKey value which will be used by main page decorator. -->
-    <Content contentId="IMAGE_SLIDER" contentTypeId="MEDIA" contentName="Image Slider" mimeTypeId="text/html"/>
+    <Content contentId="IMAGE_SLIDER" contentTypeId="DOCUMENT" contentName="Image Slider" mimeTypeId="text/html"/>
     <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER" mapKey="first-slider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
  
     <!-- Setup a slide -->
@@ -202,16 +202,16 @@ under the License.
             ]]>
         </textData>
     </ElectronicText>
-    <Content contentId="SLIDE_1" contentTypeId="SLIDE" contentName="Slide One Content" mimeTypeId="text/html"/>
-    <Content contentId="SLIDE_1_IMAGE" contentTypeId="IMAGE" contentName="Slide One Image" dataResourceId="SLIDE_1_IMAGE"/>
-    <Content contentId="SLIDE_1_CAPTION" contentTypeId="TEXT_COPY" contentName="Slide One Caption" dataResourceId="SLIDE_1_CAPTION" mimeTypeId="text/html"/>
+    <Content contentId="SLIDE_1" contentTypeId="DOCUMENT" contentName="Slide One Content" mimeTypeId="text/html"/>
+    <Content contentId="SLIDE_1_IMAGE" contentTypeId="DOCUMENT" contentName="Slide One Image" dataResourceId="SLIDE_1_IMAGE" mimeTypeId="image/jpeg"/>
+    <Content contentId="SLIDE_1_CAPTION" contentTypeId="DOCUMENT" contentName="Slide One Caption" dataResourceId="SLIDE_1_CAPTION" mimeTypeId="text/html"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="IMAGE_SLIDER" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
 
     <!-- Add tileset. As such they are not much different from Slider. Like slider it is also of type MEDIA, and like MEDIA traditionally it may 3 components -->
-    <Content contentId="TILESET_1" contentTypeId="MEDIA" contentName="First tileset on Home Page" mimeTypeId="text/html"/>
+    <Content contentId="TILESET_1" contentTypeId="DOCUMENT" contentName="First tileset on Home Page" mimeTypeId="text/html"/>
     <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="TILESET_1" mapKey="first-tileSet" sequenceNum="3" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
   
     <DataResource dataResourceId="TILE_1_IMAGE" dataResourceTypeId="OFBIZ_FILE_BIN" dataTemplateTypeId="NONE" objectInfo="/img/categories/main/1001.jpg" mimeTypeId="image/jpeg"/>
@@ -224,9 +224,9 @@ under the License.
         </textData>
     </ElectronicText>
      
-    <Content contentId="TILE_1" contentTypeId="TILE" contentName="Tile One Content" mimeTypeId="text/html"/>
-    <Content contentId="TILE_1_IMAGE" contentTypeId="IMAGE" contentName="Tile One Image" dataResourceId="TILE_1_IMAGE"/>
-    <Content contentId="TILE_1_CAPTION" contentTypeId="TEXT_COPY" contentName="Tile One Caption" dataResourceId="TILE_1_CAPTION" mimeTypeId="text/html"/>
+    <Content contentId="TILE_1" contentTypeId="DOCUMENT" contentName="Tile One Content" mimeTypeId="text/html"/>
+    <Content contentId="TILE_1_IMAGE" contentTypeId="DOCUMENT" contentName="Tile One Image" dataResourceId="TILE_1_IMAGE"  mimeTypeId="image/jpeg"/>
+    <Content contentId="TILE_1_CAPTION" contentTypeId="DOCUMENT" contentName="Tile One Caption" dataResourceId="TILE_1_CAPTION" mimeTypeId="text/html"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TOPS" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>

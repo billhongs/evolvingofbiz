@@ -21,9 +21,9 @@ under the License.
 <entity-engine-xml>
     <!-- Setup Digital commerce website and its content repository trunk   -->
 
-    <WebSite webSiteId="DComSite" siteName="Digital Commerce Web Site"/>
+    <WebSite webSiteId="DCOM_SITE" siteName="Digital Commerce Web Site"/>
     <Content contentId="DSITE_PPT_TRUNK" contentTypeId="WEB_SITE_PUB_PT" contentName="Website content repo trunk"/>
-    <WebSiteContent webSiteId="DComSite" contentId="DSITE_PPT_TRUNK" webSiteContentTypeId="PUBLISH_POINT" fromDate="2014-10-02 00:00:00"/>
+    <WebSiteContent webSiteId="DCOM_SITE" contentId="DSITE_PPT_TRUNK" webSiteContentTypeId="PUBLISH_POINT" fromDate="2014-10-02 00:00:00"/>
 
     <!-- Main (Root) Decorator -->
     <!-- Series of HTML templates that will render content data as modern html and in some case content is rendered in JSON format-->
@@ -119,7 +119,122 @@ under the License.
     <ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_HEADER" contentAssocTypeId="SUB_CONTENT" mapKey="header" fromDate="2014-10-02 00:00:00"/>
     <ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_FOOTER" contentAssocTypeId="SUB_CONTENT" mapKey="footer" fromDate="2014-10-02 00:00:00"/>
 
+    <!-- read to use Components for quickly building Content Managed webpage.  -->
+    <!-- We will use Bootstrap components written in pure AngularJS interacting with Apache OFBiz Platform -->
 
+    <!-- Home page Decorator -->
+    <!-- javascript code to get data from server will live in separate javascript file  -->
+    <!-- To learn more about AngularJS Bootstrap UI component visit http://angular-ui.github.io/bootstrap/ -->
+    <!-- Home page decorator will have all the html code that webpage needs, including slider, tile set, textcopy etc -->
+    <!-- Add webpath to get webpage content as json response -->
+    <!-- Webpage can have complex Media blocks or simple text blocks  -->
+    
+    <DataResource dataResourceId="DEFAULT_PAGE_DEC" dataResourceName="Default page Decorator" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
+    <ElectronicText dataResourceId="DEFAULT_PAGE_DEC">
+        <textData>
+            <![CDATA[
+                <div ng-controller="CarouselDemoCtrl">
+                    <div style="height: 305px">
+                        <carousel interval="myInterval">
+                            <slide ng-repeat="slide in slides" active="slide.active">
+                                <img ng-src="{{slide.image}}" style="margin:auto;">
+                                <div class="carousel-caption">
+                                    <h4>Slide {{$index}}</h4>
+                                    <p>{{slide.text}}</p>
+                                </div>
+                            </slide>
+                        </carousel>
+                    </div>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-md-3 col-sm-6 hero-feature">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/800x500" alt="">
+                            <div class="caption">
+                                <h3>Feature Label</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                <p><a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a></p>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="col-md-3 col-sm-6 hero-feature">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/800x500" alt="">
+                            <div class="caption">
+                                <h3>Feature Label</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                                <p><a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ]]>
+        </textData>
+    </ElectronicText>
+    <Content contentId="DEFAULT_PAGE_DEC" contentTypeId="VIEW_DECORATOR" contentName="Default page Decorator" dataResourceId="DEFAULT_PAGE_DEC"/>
+    <ContentPurpose contentId="DEFAULT_PAGE_DEC" contentPurposeTypeId="SECTION"/>
 
+    <!-- Add Default Webpage to website -->
+    <Content contentId="HOME_MAIN_CNT" contentTypeId="DOCUMENT" contentName="Home Page Content" decoratorContentId="DEFAULT_PAGE_DEC" statusId="CTNT_PUBLISHED"/>
+    <WebSiteContent webSiteId="DCOM_SITE" contentId="HOME_MAIN_CNT" webSiteContentTypeId="DEFAULT_PAGE" fromDate="2014-10-02 00:00:00"/>
+    <ContentAssoc contentId="DSITE_PPT_TRUNK" contentIdTo="HOME_MAIN_CNT" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>    
 
+    <!-- Add Meta data to the home page -->
+    <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-title" metaDataValue="Covering Naked Bodies Since 1977" />
+    <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-keyword" metaDataValue="apparel specializes, unique apparel, apparel designs" />
+    <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-desc" metaDataValue="NotNaked Apparel specializes in finding and creating interesting and unique apparel designs for the up and coming hipsters."/> 
+
+    <!-- add Slider to the home page --> 
+    <!-- Create slider content with a content type as MEDIA, associate it to main page content with a mapKey value which will be used by main page decorator. -->
+    <Content contentId="IMAGE_SLIDER" contentTypeId="MEDIA" contentName="Image Slider" mimeTypeId="text/html"/>
+    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER" mapKey="first-slider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
+ 
+    <!-- Setup a slide -->
+    <!-- Complex Slide example. Slide has 3 data components. 1) Image 2) Caption (may be rendered on image) 3) URL to some webpage to make image active link.   -->
+    <DataResource dataResourceId="SLIDE_1_IMAGE" dataResourceTypeId="OFBIZ_FILE_BIN" dataTemplateTypeId="NONE" objectInfo="/img/HpPromoWinter.jpg" mimeTypeId="image/jpeg"/>
+    <DataResource dataResourceId="SLIDE_1_CAPTION" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
+    <ElectronicText dataResourceId="SLIDE_1_CAPTION">
+        <textData>
+            <![CDATA[
+                Caption for Slide 1  
+            ]]>
+        </textData>
+    </ElectronicText>
+    <Content contentId="SLIDE_1" contentTypeId="SLIDE" contentName="Slide One Content" mimeTypeId="text/html"/>
+    <Content contentId="SLIDE_1_IMAGE" contentTypeId="IMAGE" contentName="Slide One Image" dataResourceId="SLIDE_1_IMAGE"/>
+    <Content contentId="SLIDE_1_CAPTION" contentTypeId="TEXT_COPY" contentName="Slide One Caption" dataResourceId="SLIDE_1_CAPTION" mimeTypeId="text/html"/>
+    <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="IMAGE_SLIDER" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
+
+    <!-- Add tileset. As such they are not much different from Slider. Like slider it is also of type MEDIA, and like MEDIA traditionally it may 3 components -->
+    <Content contentId="TILESET_1" contentTypeId="MEDIA" contentName="First tileset on Home Page" mimeTypeId="text/html"/>
+    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="TILESET_1" mapKey="first-tileSet" sequenceNum="3" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
+  
+    <DataResource dataResourceId="TILE_1_IMAGE" dataResourceTypeId="OFBIZ_FILE_BIN" dataTemplateTypeId="NONE" objectInfo="/img/categories/main/1001.jpg" mimeTypeId="image/jpeg"/>
+    <DataResource dataResourceId="TILE_1_CAPTION" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
+    <ElectronicText dataResourceId="TILE_1_CAPTION">
+        <textData>
+            <![CDATA[
+                The tile 1 caption
+            ]]>
+        </textData>
+    </ElectronicText>
+     
+    <Content contentId="TILE_1" contentTypeId="TILE" contentName="Tile One Content" mimeTypeId="text/html"/>
+    <Content contentId="TILE_1_IMAGE" contentTypeId="IMAGE" contentName="Tile One Image" dataResourceId="TILE_1_IMAGE"/>
+    <Content contentId="TILE_1_CAPTION" contentTypeId="TEXT_COPY" contentName="Tile One Caption" dataResourceId="TILE_1_CAPTION" mimeTypeId="text/html"/>
+    <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="TILE_1" contentIdTo="TOPS" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
+    <ContentAssoc contentId="TILESET_1" contentIdTo="TILE_1" mapKey="tile" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2012-08-08 00:00:00"/>    
+    
+    
+    
+    
+    
+    
 </entity-engine-xml>

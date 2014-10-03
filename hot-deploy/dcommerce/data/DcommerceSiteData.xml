@@ -186,10 +186,20 @@ under the License.
     <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-keyword" metaDataValue="apparel specializes, unique apparel, apparel designs" />
     <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-desc" metaDataValue="NotNaked Apparel specializes in finding and creating interesting and unique apparel designs for the up and coming hipsters."/> 
 
+    <DataResource dataResourceId="DEFAULT_JSON_DEC" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
+    <ElectronicText dataResourceId="DEFAULT_JSON_DEC">
+        <textData><![CDATA[
+            ${decoratedContent}
+        ]]></textData>
+    </ElectronicText>
+    <Content contentId="DEFAULT_JSON_DEC" contentTypeId="DECORATOR" contentName="JSON Decorator" dataResourceId="DEFAULT_JSON_DEC"/>
+    <ContentPurpose contentId="DEFAULT_JSON_DEC" contentPurposeTypeId="SECTION"/>
+
+
     <!-- add Slider to the home page --> 
     <!-- Create slider content with a content type as MEDIA, associate it to main page content with a mapKey value which will be used by main page decorator. -->
-    <Content contentId="IMAGE_SLIDER" contentTypeId="DOCUMENT" contentName="Image Slider" mimeTypeId="text/html"/>
-    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER" mapKey="first-slider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
+    <Content contentId="IMAGE_SLIDER_1" contentTypeId="DOCUMENT" contentName="Primary Image Slider" decoratorContentId="DEFAULT_JSON_DEC" mimeTypeId="application/json"/>
+    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER_1" mapKey="first-slider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
  
     <!-- Setup a slide -->
     <!-- Complex Slide example. Slide has 3 data components. 1) Image 2) Caption (may be rendered on image) 3) URL to some webpage to make image active link.   -->
@@ -208,10 +218,10 @@ under the License.
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
-    <ContentAssoc contentId="IMAGE_SLIDER" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
+    <ContentAssoc contentId="IMAGE_SLIDER_1" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
 
     <!-- Add tileset. As such they are not much different from Slider. Like slider it is also of type MEDIA, and like MEDIA traditionally it may 3 components -->
-    <Content contentId="TILESET_1" contentTypeId="DOCUMENT" contentName="First tileset on Home Page" mimeTypeId="text/html"/>
+    <Content contentId="TILESET_1" contentTypeId="DOCUMENT" contentName="First tileset on Home Page" decoratorContentId="DEFAULT_JSON_DEC" mimeTypeId="application/json"/>
     <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="TILESET_1" mapKey="first-tileSet" sequenceNum="3" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
   
     <DataResource dataResourceId="TILE_1_IMAGE" dataResourceTypeId="OFBIZ_FILE_BIN" dataTemplateTypeId="NONE" objectInfo="/img/categories/main/1001.jpg" mimeTypeId="image/jpeg"/>
@@ -231,10 +241,5 @@ under the License.
     <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TOPS" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="TILESET_1" contentIdTo="TILE_1" mapKey="tile" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2012-08-08 00:00:00"/>    
-    
-    
-    
-    
-    
     
 </entity-engine-xml>

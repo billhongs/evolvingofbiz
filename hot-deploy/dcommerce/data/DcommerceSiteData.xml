@@ -75,6 +75,19 @@ under the License.
                 <#-- Metdata data of webpage -->
                 <meta name="description" content="${(decoratedContent.subcontent.metaDescription.render)!}"/>
                 <meta name="keywords" content="${(decoratedContent.subcontent.metaKeywords.render)!}"/>
+                
+                <#assign nothing = thisContent.setMapKeyFilter("stylesheet")/>
+                <#list thisContent.subcontent_all as content>
+                    <link rel="stylesheet" href="<@ofbizContentUrl>${StringUtil.wrapString(content.toString())}</@ofbizContentUrl>" type="text/css"/>
+                </#list>                
+                
+                <#-- find all javascript subcontents and sort by sequenceNum field -->
+                <#assign nothing = thisContent.setMapKeyFilter("javascript")/>
+                <#assign nothing = thisContent.setSortOrder("caSequenceNum")/>
+                
+                <#list thisContent.subcontent_all as content>
+                    <script src="<@ofbizContentUrl>${StringUtil.wrapString(content.toString())}</@ofbizContentUrl>" type="text/javascript"></script>
+                </#list>                
             </head>
             <body>
         ]]></textData>

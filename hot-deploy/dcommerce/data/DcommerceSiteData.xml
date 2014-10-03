@@ -19,6 +19,12 @@ under the License.
 -->
 
 <entity-engine-xml>
+    <!-- Type data that we will move to new file if needed -->
+    <!--  Meta Data Predicate for webpages (SEO purposes) -->
+    <MetaDataPredicate metaDataPredicateId="web-page-title" description="SEO friendly title of web page."/>
+    <MetaDataPredicate metaDataPredicateId="web-page-keyword" description="SEO friendly keyword of web page."/>
+    <MetaDataPredicate metaDataPredicateId="web-page-desc" description="SEO friendly description of web page."/>
+
     <!-- Setup Digital commerce website and its content repository trunk   -->
 
     <WebSite webSiteId="DCOM_SITE" siteName="Digital Commerce Web Site"/>
@@ -173,7 +179,7 @@ under the License.
             ]]>
         </textData>
     </ElectronicText>
-    <Content contentId="DEFAULT_PAGE_DEC" contentTypeId="VIEW_DECORATOR" contentName="Default page Decorator" dataResourceId="DEFAULT_PAGE_DEC"/>
+    <Content contentId="DEFAULT_PAGE_DEC" decoratorContentId="DSITE_DEC"  contentTypeId="DECORATOR" contentName="Default page Decorator" dataResourceId="DEFAULT_PAGE_DEC"/>
     <ContentPurpose contentId="DEFAULT_PAGE_DEC" contentPurposeTypeId="SECTION"/>
 
     <!-- Add Default Webpage to website -->
@@ -217,7 +223,7 @@ under the License.
     <Content contentId="SLIDE_1_CAPTION" contentTypeId="DOCUMENT" contentName="Slide One Caption" dataResourceId="SLIDE_1_CAPTION" mimeTypeId="text/html"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
-    <ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
+    <!--  -->ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/-->
     <ContentAssoc contentId="IMAGE_SLIDER_1" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
 
     <!-- Add tileset. As such they are not much different from Slider. Like slider it is also of type MEDIA, and like MEDIA traditionally it may 3 components -->
@@ -239,7 +245,7 @@ under the License.
     <Content contentId="TILE_1_CAPTION" contentTypeId="DOCUMENT" contentName="Tile One Caption" dataResourceId="TILE_1_CAPTION" mimeTypeId="text/html"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="TILE_1" contentIdTo="TILE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
-    <ContentAssoc contentId="TILE_1" contentIdTo="TOPS" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
+    <!-- ContentAssoc contentId="TILE_1" contentIdTo="TOPS" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/-->
     <ContentAssoc contentId="TILESET_1" contentIdTo="TILE_1" mapKey="tile" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2012-08-08 00:00:00"/>    
     
 </entity-engine-xml>

@@ -81,6 +81,19 @@ under the License.
     </ElectronicText>
     <Content contentId="DSITE_HHEAD" contentTypeId="DOCUMENT" contentName="CMS Site HTML Head" dataResourceId="DSITE_HHEAD"/>
     <ContentPurpose contentId="DSITE_HHEAD" contentPurposeTypeId="SECTION"/>
+    
+    <!-- Add css file links to HHEAD -->
+    <DataResource dataResourceId="BOOTSTRAP_MIN_CSS" dataResourceTypeId="LINK" objectInfo="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" mimeTypeId="text/css"/>
+    <Content contentId="BOOTSTRAP_MIN_CSS" contentTypeId="DOCUMENT" contentName="Bootstrap compiled and minified CSS" dataResourceId="BOOTSTRAP_MIN_CSS"/>
+    <ContentAssoc contentId="DSITE_HHEAD" contentIdTo="BOOTSTRAP_MIN_CSS" sequenceNum="1" contentAssocTypeId="SUB_CONTENT" mapKey="stylesheet" fromDate="2014-10-02 00:00:00"/>
+
+    <DataResource dataResourceId="JQUERY_MIN_JS" dataResourceTypeId="LINK" objectInfo="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" mimeTypeId="text/javascript"/>
+    <Content contentId="JQUERY_MIN_JS" contentTypeId="DOCUMENT" contentName="JQuery compiled and minified JS" dataResourceId="JQUERY_MIN_JS"/>
+    <ContentAssoc contentId="DSITE_HHEAD" contentIdTo="JQUERY_MIN_JS" sequenceNum="1" contentAssocTypeId="SUB_CONTENT" mapKey="javascript" fromDate="2014-10-02 00:00:00"/>
+
+    <DataResource dataResourceId="BOOTSTRAP_MIN_JS" dataResourceTypeId="LINK" objectInfo="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" mimeTypeId="text/javascript"/>
+    <Content contentId="BOOTSTRAP_MIN_JS" contentTypeId="DOCUMENT" contentName="Bootstrap compiled and minified JS" dataResourceId="BOOTSTRAP_MIN_JS"/>
+    <ContentAssoc contentId="DSITE_HHEAD" contentIdTo="BOOTSTRAP_MIN_JS" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" mapKey="javascript" fromDate="2014-10-02 00:00:00"/>
 
     <DataResource dataResourceId="DSITE_HEADER" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DSITE_HEADER">

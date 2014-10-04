@@ -179,7 +179,7 @@ under the License.
     <!-- Add webpath to get webpage content as json response -->
     <!-- Webpage can have complex Media blocks or simple text blocks  -->
 
-    <DataResource dataResourceId="DEFAULT_PAGE_CSS" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="NONE"/>
+    <DataResource dataResourceId="DEFAULT_PAGE_CSS" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="NONE" mimeTypeId="text/css"/>
     <ElectronicText dataResourceId="DEFAULT_PAGE_CSS">
         <textData><![CDATA[
 body {
@@ -232,7 +232,7 @@ footer {
 }
             ]]></textData>
     </ElectronicText>
-    <Content contentId="DEFAULT_PAGE_CSS" contentTypeId="DOCUMENT" contentName="DefaultPageCss" dataResourceId="DEFAULT_PAGE_CSS"/>
+    <Content contentId="DEFAULT_PAGE_CSS" contentTypeId="DOCUMENT" contentName="DefaultPageCss" dataResourceId="DEFAULT_PAGE_CSS"  mimeTypeId="text/css"/>
     <WebSitePathAlias webSiteId="DCOM_SITE" pathAlias="DefaultPageStyle.css" contentId="DEFAULT_PAGE_CSS"/>
     
     <DataResource dataResourceId="DEFAULT_PAGE_DEC" dataResourceName="Default page Decorator" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>

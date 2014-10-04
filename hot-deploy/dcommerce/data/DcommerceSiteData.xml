@@ -71,14 +71,15 @@ under the License.
                 <#assign nothing = thisContent.setMapKeyFilter("stylesheet")/>
                 <#list thisContent.subcontent_all as content>
                     <link rel="stylesheet" href="<@ofbizContentUrl>${StringUtil.wrapString(content.toString())}</@ofbizContentUrl>" type="text/css"/>
-                </#list>                
+                </#list>
 
                 <#-- find all javascript subcontents and sort by sequenceNum field -->
                 <#assign nothing = thisContent.setMapKeyFilter("javascript")/>
                 <#assign nothing = thisContent.setSortOrder("caSequenceNum")/>
                 <#list thisContent.subcontent_all as content>
                     <script src="<@ofbizContentUrl>${StringUtil.wrapString(content.toString())}</@ofbizContentUrl>" type="text/javascript"></script>
-                </#list>                
+                </#list>
+
             </head>
             <body>
         ]]></textData>
@@ -102,10 +103,30 @@ under the License.
     <DataResource dataResourceId="DSITE_HEADER" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DSITE_HEADER">
         <textData><![CDATA[
-            <div id="header">
-                <h1>This is the header!</h1>
-            </div>
-            ]]></textData>
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Start Bootstrap</a>
+                    </div>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Services</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container -->
+            </nav>
+        ]]></textData>
     </ElectronicText>
     <Content contentId="DSITE_HEADER" contentTypeId="DOCUMENT" contentName="Header" dataResourceId="DSITE_HEADER"/>
     <ContentPurpose contentId="DSITE_HEADER" contentPurposeTypeId="SECTION"/>
@@ -113,12 +134,18 @@ under the License.
     <DataResource dataResourceId="DSITE_FOOTER" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DSITE_FOOTER">
         <textData><![CDATA[
-            <div id="footer">
-                <h4>This is the footer!</h4>
+            <!-- Footer -->
+            <div class="container">
+                <hr>
+                <footer>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>Copyright &copy; Digital Commerce Application 2014</p>
+                        </div>
+                    </div>
+                </footer>
             </div>
-            </body>
-            </html>
-            ]]></textData>
+         ]]></textData>
     </ElectronicText>
     <Content contentId="DSITE_FOOTER" contentTypeId="DOCUMENT" contentName="Footer" dataResourceId="DSITE_FOOTER"/>
     <ContentPurpose contentId="DSITE_FOOTER" contentPurposeTypeId="SECTION"/>
@@ -151,48 +178,224 @@ under the License.
     <!-- Home page decorator will have all the html code that webpage needs, including slider, tile set, textcopy etc -->
     <!-- Add webpath to get webpage content as json response -->
     <!-- Webpage can have complex Media blocks or simple text blocks  -->
+
+    <DataResource dataResourceId="DEFAULT_PAGE_CSS" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="NONE"/>
+    <ElectronicText dataResourceId="DEFAULT_PAGE_CSS">
+        <textData><![CDATA[
+body {
+    padding-top: 70px; 
+}
+  
+.slide-image {
+    width: 100%;
+}
+
+.carousel-holder {
+    margin-bottom: 30px;
+}
+
+.carousel-control,
+.item {
+    border-radius: 4px;
+}
+
+.caption {
+    height: 130px;
+    overflow: hidden;
+}
+
+.caption h4 {
+    white-space: nowrap;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+.ratings {
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #d17581;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+    color: #333;
+}
+
+footer {
+    margin: 50px 0;
+}
+            ]]></textData>
+    </ElectronicText>
+    <Content contentId="DEFAULT_PAGE_CSS" contentTypeId="DOCUMENT" contentName="DefaultPageCss" dataResourceId="DEFAULT_PAGE_CSS"/>
     
     <DataResource dataResourceId="DEFAULT_PAGE_DEC" dataResourceName="Default page Decorator" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DEFAULT_PAGE_DEC">
         <textData>
             <![CDATA[
-                <div ng-controller="CarouselDemoCtrl">
-                    <div style="height: 305px">
-                        <carousel interval="myInterval">
-                            <slide ng-repeat="slide in slides" active="slide.active">
-                                <img ng-src="{{slide.image}}" style="margin:auto;">
-                                <div class="carousel-caption">
-                                    <h4>Slide {{$index}}</h4>
-                                    <p>{{slide.text}}</p>
+    <#-- add style sheet file link  -->
+    <link href="${thisContent.content.DEFAULT_PAGE_CSS.link}" type="text/css" rel="stylesheet" />
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <p class="lead">Shop Name</p>
+                <div class="list-group">
+                    <a href="#" class="list-group-item">Category 1</a>
+                    <a href="#" class="list-group-item">Category 2</a>
+                    <a href="#" class="list-group-item">Category 3</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="row carousel-holder">
+                    <div class="col-md-12">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img class="slide-image" src="http://placehold.it/800x300" alt="">
                                 </div>
-                            </slide>
-                        </carousel>
-                    </div>
-                </div>
-                
-                <div class="row text-center">
-                    <div class="col-md-3 col-sm-6 hero-feature">
-                        <div class="thumbnail">
-                            <img src="http://placehold.it/800x500" alt="">
-                            <div class="caption">
-                                <h3>Feature Label</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                <p><a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a></p>
+                                <div class="item">
+                                    <img class="slide-image" src="http://placehold.it/800x300" alt="">
+                                </div>
+                                <div class="item">
+                                    <img class="slide-image" src="http://placehold.it/800x300" alt="">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                        
-                    <div class="col-md-3 col-sm-6 hero-feature">
-                        <div class="thumbnail">
-                            <img src="http://placehold.it/800x500" alt="">
-                            <div class="caption">
-                                <h3>Feature Label</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                                <p><a href="#" class="btn btn-primary">Buy Now!</a> <a href="#" class="btn btn-default">More Info</a></p>
-                            </div>
+                            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">$24.99</h4>
+                                <h4><a href="#">First Product</a></h4>
+                                <p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">15 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">$64.99</h4>
+                                <h4><a href="#">Second Product</a></h4>
+                                <p>This is a short description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">12 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">$74.99</h4>
+                                <h4><a href="#">Third Product</a></h4>
+                                <p>This is a short description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">31 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">$84.99</h4>
+                                <h4><a href="#">Fourth Product</a></h4>
+                                <p>This is a short description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">6 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">$94.99</h4>
+                                <h4><a href="#">Fifth Product</a></h4>
+                                <p>This is a short description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">18 reviews</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 col-lg-4 col-md-4">
+                        <h4><a href="#">Like this template?</a></h4>
+                        <p>If you like this template, then check out <a target="_blank" href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">this tutorial</a> on how to build a working review system for your online store!</p>
+                        <a class="btn btn-primary" target="_blank" href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">View Tutorial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
             ]]>
         </textData>
     </ElectronicText>
@@ -208,6 +411,8 @@ under the License.
     <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-title" metaDataValue="Covering Naked Bodies Since 1977" />
     <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-keyword" metaDataValue="apparel specializes, unique apparel, apparel designs" />
     <ContentMetaData contentId="HOME_MAIN_CNT" metaDataPredicateId="web-page-desc" metaDataValue="NotNaked Apparel specializes in finding and creating interesting and unique apparel designs for the up and coming hipsters."/> 
+    <!-- Add css file relationship -->
+    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="DEFAULT_PAGE_CSS" mapKey="stylesheets" sequenceNum="1" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
 
     <DataResource dataResourceId="DEFAULT_JSON_DEC" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DEFAULT_JSON_DEC">

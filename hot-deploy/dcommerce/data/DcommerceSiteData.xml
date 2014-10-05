@@ -255,8 +255,23 @@ footer {
             <div class="col-md-9">
                 <div class="row carousel-holder">
                     <div class="col-md-12">
-                        <!-- Carousel aka Slider.  -->
-                        <!-- Widget is used to show complex data, A widget that has Image, Caption, and link to webpage.  -->
+                        <#-- Carousel aka Slider.  -->
+                        <#-- Slide in slider can be simple image content that will be rendered or It can be collection of contents like Image, Caption, and advertisedLink to webpage.  -->
+                        <#-- use decoratedContent.subcontent.sliderMapKey to get the slider content. -->
+
+                        <#-- the slider ( e.g firstSlider) is collection of slides. So there is no dataresource attached to it.  -->
+                        <#-- set reference to slider content in local variable so its clean and easy to work with its slides. -->
+                        <#assign firstSlider = decoratedContent.subcontent.firstSlider/>
+
+                        <#-- Slider has collection of slides-->
+                        <#assign nothing = firstSlider.setMapKeyFilter("slides")/>
+                        <#list firstSlider.subcontent_all as content>
+                            <#-- In this example each slide is complex object with three data elements. 1) image, 2) caption, 3) advertisedLink -->
+                            ${StringUtil.wrapString(content.subcontent.image.toString())}
+                            ${StringUtil.wrapString(content.subcontent.caption.toString())}
+                            ${StringUtil.wrapString(content.subcontent.advertisedLink.toString())}
+                        </#list>
+
                         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                             <ol class="carousel-indicators">
                                 <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
@@ -432,7 +447,7 @@ footer {
     <!-- add Slider to the home page --> 
     <!-- Create slider content with a content type as MEDIA, associate it to main page content with a mapKey value which will be used by main page decorator. -->
     <Content contentId="IMAGE_SLIDER_1" contentTypeId="DOCUMENT" contentName="Primary Image Slider" decoratorContentId="DEFAULT_JSON_DEC" mimeTypeId="application/json"/>
-    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER_1" mapKey="first-slider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
+    <ContentAssoc contentId="HOME_MAIN_CNT" contentIdTo="IMAGE_SLIDER_1" mapKey="firstSlider" sequenceNum="2" contentAssocTypeId="SUB_CONTENT" fromDate="2014-10-02 00:00:00"/>
  
     <!-- Setup a slide -->
     <!-- Complex Slide example. Slide has 3 data components. 1) Image 2) Caption (may be rendered on image) 3) URL to some webpage to make image active link.   -->
@@ -445,13 +460,17 @@ footer {
             ]]>
         </textData>
     </ElectronicText>
+    <DataResource dataResourceId="APACHE_OFBIZ_HOME" dataResourceTypeId="LINK" objectInfo="http://ofbiz.apache.org/" mimeTypeId="text/html"/>
+
     <Content contentId="SLIDE_1" contentTypeId="DOCUMENT" contentName="Slide One Content" mimeTypeId="text/html"/>
+    <ContentAssoc contentId="IMAGE_SLIDER_1" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
     <Content contentId="SLIDE_1_IMAGE" contentTypeId="DOCUMENT" contentName="Slide One Image" dataResourceId="SLIDE_1_IMAGE" mimeTypeId="image/jpeg"/>
     <Content contentId="SLIDE_1_CAPTION" contentTypeId="DOCUMENT" contentName="Slide One Caption" dataResourceId="SLIDE_1_CAPTION" mimeTypeId="text/html"/>
+    <Content contentId="APACHE_OFBIZ_HOME" contentTypeId="DOCUMENT" contentName="Slide One Advertised Link" dataResourceId="APACHE_OFBIZ_HOME" mimeTypeId="text/html"/>
+
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_IMAGE" mapKey="image" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>
     <ContentAssoc contentId="SLIDE_1" contentIdTo="SLIDE_1_CAPTION" mapKey="caption" contentAssocTypeId="SUB_CONTENT" sequenceNum="2" fromDate="2014-10-02 00:00:01"/>
-    <!--  -->ContentAssoc contentId="SLIDE_1" contentIdTo="BASIC-TEE" mapKey="link" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/-->
-    <ContentAssoc contentId="IMAGE_SLIDER_1" contentIdTo="SLIDE_1" mapKey="slides" contentAssocTypeId="SUB_CONTENT" sequenceNum="1" fromDate="2014-10-02 00:00:01"/>    
+    <ContentAssoc contentId="SLIDE_1" contentIdTo="APACHE_OFBIZ_HOME" mapKey="advertisedLink" contentAssocTypeId="PUBLISH_LINK" sequenceNum="3" fromDate="2014-10-02 00:00:01"/>
 
     <!-- Add tileset. As such they are not much different from Slider. Like slider it is also of type MEDIA, and like MEDIA traditionally it may 3 components -->
     <Content contentId="TILESET_1" contentTypeId="DOCUMENT" contentName="First tileset on Home Page" decoratorContentId="DEFAULT_JSON_DEC" mimeTypeId="application/json"/>

@@ -27,16 +27,18 @@ under the License.
 
     <!-- Main (Root) Decorator -->
     <!-- Series of HTML templates that will render content data as modern html and in some case content is rendered in JSON format-->
-    <!-- The webpage content (also called webpage body ) uses Website decorator for adding htmlHead, header and footer -->
+    <!-- The webpage content (also called webpage body ) uses Website decorator for adding htmlHead, header, footer and htmlFooter -->
     <!-- htmlHead adds webpage Meta contents (important for SEO) and some techinical stuff like, common javascript libraries, stylesheets (css) -->
     <!-- header has Navigation and many other important visual objects common to all webpages -->
     <!-- footer, like header, footer has content (generally site map) that is common between all webpages -->
+    <!-- htmlFooter closed the body and html tag and some techinical stuff like, javascript libraries, stylesheets (css) that can be included in footer-->
     
     <!--
          DSITE_DEC (Content of type DECORATOR associated to a DataResource with placeholders for mapKeys "htmlHead", "header", "footer")
           |_____(ContentAssoc of type SUB_CONTENT with mapKey "htmlHead")______> DSITE_HHEAD (Content of type DOCUMENT)
           |_____(ContentAssoc of type SUB_CONTENT with mapKey "header")________> DSITE_HEADER (Content of type DOCUMENT)
           |_____(ContentAssoc of type SUB_CONTENT with mapKey "footer")________> DSITE_FOOTER (Content of type DOCUMENT)
+          |_____(ContentAssoc of type SUB_CONTENT with mapKey "htmlFooter")______> DSITE_HFOOTER (Content of type DOCUMENT)
     -->
 
 
@@ -75,6 +77,17 @@ under the License.
     </ElectronicText>
     <Content contentId="DSITE_HHEAD" contentTypeId="DOCUMENT" contentName="CMS Site HTML Head" dataResourceId="DSITE_HHEAD"/>
     <ContentPurpose contentId="DSITE_HHEAD" contentPurposeTypeId="SECTION"/>
+    
+    <ElectronicText dataResourceId="DSITE_HFOOTER">
+        <textData><![CDATA[
+            </body>
+            </html>
+        ]]></textData>
+    </ElectronicText>
+    <Content contentId="DSITE_HFOOTER" contentTypeId="DOCUMENT" contentName="CMS Site HTML Footer" dataResourceId="DSITE_HFOOTER"/>
+    <ContentPurpose contentId="DSITE_HFOOTER" contentPurposeTypeId="SECTION"/>
+    
+    
 
     <DataResource dataResourceId="DSITE_HEADER" dataResourceTypeId="ELECTRONIC_TEXT" dataTemplateTypeId="FTL"/>
     <ElectronicText dataResourceId="DSITE_HEADER">
@@ -109,6 +122,7 @@ under the License.
             ${decoratedContent}
             
             ${(decoratedContent.subcontent.footer)?default((thisContent.subcontent.footer)!)}
+            ${(decoratedContent.subcontent.htmlFooter)?default((thisContent.subcontent.htmlFooter)!)}
         ]]></textData>
     </ElectronicText>
     <Content contentId="DSITE_DEC" contentTypeId="DECORATOR" contentName="CMS Site Main Decorator" dataResourceId="DSITE_DEC"/>
@@ -118,6 +132,7 @@ under the License.
     <ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_HHEAD" contentAssocTypeId="SUB_CONTENT" mapKey="htmlHead" fromDate="2014-10-02 00:00:00"/>
     <ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_HEADER" contentAssocTypeId="SUB_CONTENT" mapKey="header" fromDate="2014-10-02 00:00:00"/>
     <ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_FOOTER" contentAssocTypeId="SUB_CONTENT" mapKey="footer" fromDate="2014-10-02 00:00:00"/>
+    h<ContentAssoc contentId="DSITE_DEC" contentIdTo="DSITE_HFOOTER" contentAssocTypeId="SUB_CONTENT" mapKey="htmlFooter" fromDate="2014-10-02 00:00:00"/>
 
     <!-- read to use Components for quickly building Content Managed webpage.  -->
     <!-- We will use Bootstrap components written in pure AngularJS interacting with Apache OFBiz Platform -->

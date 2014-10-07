@@ -172,6 +172,7 @@ under the License.
             ${decoratedContent}
             
             ${(decoratedContent.subcontent.footer)?default((thisContent.subcontent.footer)!)}
+            ${(decoratedContent.subcontent.htmlFooter)?default((thisContent.subcontent.htmlFooter)!)}
         ]]></textData>
     </ElectronicText>
     <Content contentId="DSITE_DEC" contentTypeId="DECORATOR" contentName="CMS Site Main Decorator" dataResourceId="DSITE_DEC"/>

@@ -174,9 +174,6 @@ public class OrderServices {
         // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
         DateFormat df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
         solrDocument.addField("orderDate", df.format(order.get("orderDate")));
-        if (UtilValidate.isNotEmpty(orderItem.get("correspondingPoId"))) {
-            solrDocument.addField("correspondingPoId", orderItem.get("correspondingPoId"));
-        }
         String roleTypeId = "BILL_TO_CUSTOMER";
         if ("PURCHASE_ORDER".equals(order.getString("orderTypeId"))) {
             roleTypeId = "BILL_FROM_VENDOR";

@@ -21,12 +21,7 @@ package org.ofbiz.scrum;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Timestamp;
-import com.ibm.icu.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,15 +31,13 @@ import javolution.util.FastSet;
 
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilMisc;
-import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
-import org.ofbiz.entity.condition.EntityConditionList;
-import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
+import org.ofbiz.entity.util.EntityQuery;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.GenericServiceException;
@@ -65,7 +58,7 @@ public class ScrumServices {
 
         if (UtilValidate.isNotEmpty(communicationEventId)) {
             try {
-                GenericValue communicationEvent = delegator.findOne("CommunicationEvent", UtilMisc.toMap("communicationEventId", communicationEventId), false);
+                GenericValue communicationEvent = EntityQuery.use(delegator).from("CommunicationEvent").where("communicationEventId", communicationEventId).queryOne();
                 if (UtilValidate.isNotEmpty(communicationEvent)) {
                     String subject = communicationEvent.getString("subject");
                     if (UtilValidate.isNotEmpty(subject)) {
@@ -78,9 +71,9 @@ public class ScrumServices {
                             }
                             String productId = subject.substring(pdLocation + 3, nonDigitLocation);
                             // Debug.logInfo("=======================Product id found in subject: >>" + custRequestId + "<<", module);
-                            GenericValue product = delegator.findOne("Product", UtilMisc.toMap("productId", productId), false);
+                            GenericValue product = EntityQuery.use(delegator).from("Product").where("productId", productId).queryOne();
                             if (UtilValidate.isNotEmpty(product)) {
-                                GenericValue communicationEventProductMap = delegator.findOne("CommunicationEventProduct", UtilMisc.toMap("productId", productId, "communicationEventId", communicationEventId), false);
+                                GenericValue communicationEventProductMap = EntityQuery.use(delegator).from("CommunicationEventProduct").where("productId", productId, "communicationEventId", communicationEventId).queryOne();
                                 if (UtilValidate.isEmpty(communicationEventProductMap)) {
                                     GenericValue communicationEventProduct = delegator.makeValue("CommunicationEventProduct", UtilMisc.toMap("productId", productId, "communicationEventId", communicationEventId));
                                     communicationEventProduct.create();
@@ -292,8 +285,8 @@ public class ScrumServices {
                 if (UtilValidate.isNotEmpty(exclusions)) {
                     for (GenericValue contentResourceMap : exclusions) {
                         Debug.logInfo("Remove contentId ============== >>>>>>>>>>> "+ contentResourceMap.getString("contentId"), module);
-                        GenericValue dataResourceMap = delegator.findOne("DataResource", UtilMisc.toMap("dataResourceId", contentResourceMap.getString("dataResourceId")), false);
-                        GenericValue contentMap = delegator.findOne("Content", UtilMisc.toMap("contentId", contentResourceMap.getString("contentId")), false);
+                        GenericValue dataResourceMap = EntityQuery.use(delegator).from("DataResource").where("dataResourceId", contentResourceMap.getString("dataResourceId")).queryOne();
+                        GenericValue contentMap = EntityQuery.use(delegator).from("Content").where("contentId", contentResourceMap.getString("contentId")).queryOne();
                         contentMap.removeRelated("WorkEffortContent");
                         contentMap.removeRelated("ContentRole");
                         contentMap.remove();

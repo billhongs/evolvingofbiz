@@ -40,11 +40,8 @@ import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
-import org.ofbiz.entity.condition.EntityConditionList;
-import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityQuery;
-import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.order.order.OrderReadHelper;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.LocalDispatcher;
@@ -79,10 +76,9 @@ public class BillingAccountWorker {
         List<String> relatedPartyIdList = UtilGenerics.checkList(agentResult.get("relatedPartyIdList"));
 
         List<GenericValue> billingAccountRoleList = EntityQuery.use(delegator).from("BillingAccountRole")
-                .where(UtilMisc.toList(
-                        EntityCondition.makeCondition("partyId", EntityOperator.IN, relatedPartyIdList),
-                        EntityCondition.makeCondition("roleTypeId", EntityOperator.EQUALS, "BILL_TO_CUSTOMER")))
-                .filterByDate().queryList();
+                .where(EntityCondition.makeCondition("partyId", EntityOperator.IN, relatedPartyIdList),
+                        EntityCondition.makeCondition("roleTypeId", EntityOperator.EQUALS, "BILL_TO_CUSTOMER")
+                ).filterByDate().queryList();
 
         if (billingAccountRoleList.size() > 0) {
             BigDecimal totalAvailable = BigDecimal.ZERO;
@@ -115,12 +111,11 @@ public class BillingAccountWorker {
      */
     public static List<GenericValue> getBillingAccountOpenOrders(Delegator delegator, String billingAccountId) throws GenericEntityException {
         return EntityQuery.use(delegator).from("OrderHeader")
-                .where(UtilMisc.toList(
-                        EntityCondition.makeCondition("billingAccountId", EntityOperator.EQUALS, billingAccountId),
+                .where(EntityCondition.makeCondition("billingAccountId", EntityOperator.EQUALS, billingAccountId),
                         EntityCondition.makeCondition("statusId", EntityOperator.NOT_EQUAL, "ORDER_REJECTED"),
                         EntityCondition.makeCondition("statusId", EntityOperator.NOT_EQUAL, "ORDER_CANCELLED"),
-                        EntityCondition.makeCondition("statusId", EntityOperator.NOT_EQUAL, "ORDER_COMPLETED")))
-                .queryList();
+                        EntityCondition.makeCondition("statusId", EntityOperator.NOT_EQUAL, "ORDER_COMPLETED")
+                ).queryList();
     }
 
     /**

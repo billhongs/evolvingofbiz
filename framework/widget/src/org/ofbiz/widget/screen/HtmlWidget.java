@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
@@ -38,6 +37,7 @@ import org.ofbiz.base.util.collections.MapStack;
 import org.ofbiz.base.util.string.FlexibleStringExpander;
 import org.ofbiz.base.util.template.FreeMarkerWorker;
 import org.ofbiz.widget.ModelWidget;
+import org.ofbiz.widget.ModelWidgetVisitor;
 import org.ofbiz.widget.html.HtmlWidgetRenderer;
 import org.w3c.dom.Element;
 
@@ -59,7 +59,7 @@ public class HtmlWidget extends ModelScreenWidget {
     public static final String module = HtmlWidget.class.getName();
 
     private static final UtilCache<String, Template> specialTemplateCache = UtilCache.createUtilCache("widget.screen.template.ftl.general", 0, 0, false);
-    protected static Configuration specialConfig = FreeMarkerWorker.makeConfiguration(FreeMarkerWorker.configureBeansWrapper(new ExtendedWrapper(FreeMarkerWorker.version)));
+    protected static Configuration specialConfig = FreeMarkerWorker.makeConfiguration(new ExtendedWrapper(FreeMarkerWorker.version));
 
     // not sure if this is the best way to get FTL to use my fancy MapModel derivative, but should work at least...
     public static class ExtendedWrapper extends BeansWrapper {
@@ -129,16 +129,6 @@ public class HtmlWidget extends ModelScreenWidget {
         for (ModelScreenWidget subWidget : subWidgets) {
             subWidget.renderWidgetString(writer, context, screenStringRenderer);
         }
-    }
-
-    @Override
-    public String rawString() {
-        StringBuilder buffer = new StringBuilder("<html-widget>");
-        for (ModelScreenWidget subWidget : subWidgets) {
-            buffer.append(subWidget.rawString());
-        }
-        buffer.append("</html-widget>");
-        return buffer.toString();
     }
 
     public static void renderHtmlTemplate(Appendable writer, FlexibleStringExpander locationExdr, Map<String, Object> context) {
@@ -213,14 +203,14 @@ public class HtmlWidget extends ModelScreenWidget {
         }
 
         @Override
-        public String rawString() {
-            return "<html-template location=\"" + this.locationExdr.getOriginal() + "\"/>";
+        public void accept(ModelWidgetVisitor visitor) {
+            visitor.visit(this);
         }
     }
 
     public static class HtmlTemplateDecorator extends ModelScreenWidget {
         protected FlexibleStringExpander locationExdr;
-        protected Map<String, HtmlTemplateDecoratorSection> sectionMap = FastMap.newInstance();
+        protected Map<String, HtmlTemplateDecoratorSection> sectionMap = new HashMap<String, HtmlTemplateDecoratorSection>();
 
         public HtmlTemplateDecorator(ModelScreen modelScreen, Element htmlTemplateDecoratorElement) {
             super(modelScreen, htmlTemplateDecoratorElement);
@@ -258,8 +248,8 @@ public class HtmlWidget extends ModelScreenWidget {
         }
 
         @Override
-        public String rawString() {
-            return "<html-template-decorator location=\"" + this.locationExdr.getOriginal() + "\"/>";
+        public void accept(ModelWidgetVisitor visitor) {
+            visitor.visit(this);
         }
     }
 
@@ -272,7 +262,7 @@ public class HtmlWidget extends ModelScreenWidget {
             this.name = htmlTemplateDecoratorSectionElement.getAttribute("name");
             // read sub-widgets
             List<? extends Element> subElementList = UtilXml.childElementList(htmlTemplateDecoratorSectionElement);
-            this.subWidgets = ModelScreenWidget.readSubWidgets(this.modelScreen, subElementList);
+            this.subWidgets = ModelScreenWidget.readSubWidgets(getModelScreen(), subElementList);
         }
 
         @Override
@@ -282,8 +272,13 @@ public class HtmlWidget extends ModelScreenWidget {
         }
 
         @Override
-        public String rawString() {
-            return "<html-template-decorator-section name=\"" + this.name + "\"/>";
+        public void accept(ModelWidgetVisitor visitor) {
+            visitor.visit(this);
         }
+    }
+
+    @Override
+    public void accept(ModelWidgetVisitor visitor) {
+        visitor.visit(this);
     }
 }

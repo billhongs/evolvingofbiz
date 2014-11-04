@@ -29,8 +29,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javolution.util.FastMap;
-
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilFormatOut;
@@ -49,11 +47,12 @@ import org.ofbiz.widget.WidgetDataResourceWorker;
 import org.ofbiz.widget.WidgetWorker;
 import org.ofbiz.widget.form.FormStringRenderer;
 import org.ofbiz.widget.form.ModelForm;
+import org.ofbiz.widget.form.Paginator;
 import org.ofbiz.widget.menu.MenuStringRenderer;
 import org.ofbiz.widget.menu.ModelMenu;
 import org.ofbiz.widget.screen.ModelScreenWidget;
-import org.ofbiz.widget.screen.ScreenStringRenderer;
 import org.ofbiz.widget.screen.ModelScreenWidget.ColumnContainer;
+import org.ofbiz.widget.screen.ScreenStringRenderer;
 
 /**
  * Widget Library - HTML Form Renderer implementation
@@ -84,14 +83,14 @@ public class HtmlScreenRenderer extends HtmlWidgetRenderer implements ScreenStri
     }
 
     public void renderSectionBegin(Appendable writer, Map<String, Object> context, ModelScreenWidget.Section section) throws IOException {
-        if (section.isMainSection) {
+        if (section.isMainSection()) {
             this.widgetCommentsEnabled = ModelWidget.widgetBoundaryCommentsEnabled(context);
         }
-        renderBeginningBoundaryComment(writer, section.isMainSection?"Screen":"Section Widget", section);
+        renderBeginningBoundaryComment(writer, section.isMainSection()?"Screen":"Section Widget", section);
     }
 
     public void renderSectionEnd(Appendable writer, Map<String, Object> context, ModelScreenWidget.Section section) throws IOException {
-        renderEndingBoundaryComment(writer, section.isMainSection?"Screen":"Section Widget", section);
+        renderEndingBoundaryComment(writer, section.isMainSection()?"Screen":"Section Widget", section);
     }
 
     public void renderContainerBegin(Appendable writer, Map<String, Object> context, ModelScreenWidget.Container container) throws IOException {
@@ -256,12 +255,32 @@ public class HtmlScreenRenderer extends HtmlWidgetRenderer implements ScreenStri
         }
     }
 
+    private int getActualPageSize(Map<String, Object> context) {
+        Integer value = (Integer) context.get("actualPageSize");
+        return value != null ? value.intValue() : (getHighIndex(context) - getLowIndex(context));
+    }
+
+    private int getHighIndex(Map<String, Object> context) {
+        Integer value = (Integer) context.get("highIndex");
+        return value != null ? value.intValue() : 0;
+    }
+
+    private int getListSize(Map<String, Object> context) {
+        Integer value = (Integer) context.get("listSize");
+        return value != null ? value.intValue() : 0;
+    }
+
+    private int getLowIndex(Map<String, Object> context) {
+        Integer value = (Integer) context.get("lowIndex");
+        return value != null ? value.intValue() : 0;
+    }
+
     protected void renderScreenletPaginateMenu(Appendable writer, Map<String, Object> context, ModelScreenWidget.Form form) throws IOException {
         HttpServletResponse response = (HttpServletResponse) context.get("response");
         HttpServletRequest request = (HttpServletRequest) context.get("request");
         ModelForm modelForm = form.getModelForm(context);
         modelForm.runFormActions(context);
-        modelForm.preparePager(context);
+        Paginator.preparePager(modelForm, context);
         String targetService = modelForm.getPaginateTarget(context);
         if (targetService == null) {
             targetService = "${targetService}";
@@ -272,13 +291,13 @@ public class HtmlScreenRenderer extends HtmlWidgetRenderer implements ScreenStri
         String viewIndexParam = modelForm.getMultiPaginateIndexField(context);
         String viewSizeParam = modelForm.getMultiPaginateSizeField(context);
 
-        int viewIndex = modelForm.getViewIndex(context);
-        int viewSize = modelForm.getViewSize(context);
-        int listSize = modelForm.getListSize(context);
+        int viewIndex = Paginator.getViewIndex(modelForm, context);
+        int viewSize = Paginator.getViewSize(modelForm, context);
+        int listSize = getListSize(context);
 
-        int lowIndex = modelForm.getLowIndex(context);
-        int highIndex = modelForm.getHighIndex(context);
-        int actualPageSize = modelForm.getActualPageSize(context);
+        int lowIndex = getLowIndex(context);
+        int highIndex = getHighIndex(context);
+        int actualPageSize = getActualPageSize(context);
 
         // if this is all there seems to be (if listSize < 0, then size is unknown)
         if (actualPageSize >= listSize && listSize >= 0) return;
@@ -667,7 +686,7 @@ public class HtmlScreenRenderer extends HtmlWidgetRenderer implements ScreenStri
         Delegator delegator = (Delegator) context.get("delegator");
 
         // make a new map for content rendering; so our current map does not get clobbered
-        Map<String, Object> contentContext = FastMap.newInstance();
+        Map<String, Object> contentContext = new HashMap<String, Object>();
         contentContext.putAll(context);
         String dataResourceId = (String)contentContext.get("dataResourceId");
         if (Debug.verboseOn()) Debug.logVerbose("expandedContentId:" + expandedContentId, module);
@@ -800,7 +819,7 @@ public class HtmlScreenRenderer extends HtmlWidgetRenderer implements ScreenStri
             Delegator delegator = (Delegator) context.get("delegator");
 
             // create a new map for the content rendering; so our current context does not get overwritten!
-            Map<String, Object> contentContext = FastMap.newInstance();
+            Map<String, Object> contentContext = new HashMap<String, Object>();
             contentContext.putAll(context);
 
             try {

@@ -26,6 +26,7 @@ import java.rmi.server.UID;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,8 +37,6 @@ import java.util.WeakHashMap;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import javolution.util.FastList;
 
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.StringUtil;
@@ -87,18 +86,18 @@ import freemarker.template.TemplateException;
  * Widget Library - Form Renderer implementation based on Freemarker macros
  *
  */
-public class MacroFormRenderer implements FormStringRenderer {
+public final class MacroFormRenderer implements FormStringRenderer {
 
     public static final String module = MacroFormRenderer.class.getName();
-    private Template macroLibrary;
-    private WeakHashMap<Appendable, Environment> environments = new WeakHashMap<Appendable, Environment>();
-    private StringUtil.SimpleEncoder internalEncoder;
-    protected RequestHandler rh;
-    protected HttpServletRequest request;
-    protected HttpServletResponse response;
-    protected boolean javaScriptEnabled = false;
-    protected boolean renderPagination = true;
-    protected boolean widgetCommentsEnabled = false;
+    private final Template macroLibrary;
+    private final WeakHashMap<Appendable, Environment> environments = new WeakHashMap<Appendable, Environment>();
+    private final StringUtil.SimpleEncoder internalEncoder;
+    private final RequestHandler rh;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private final boolean javaScriptEnabled;
+    private boolean renderPagination = true;
+    private boolean widgetCommentsEnabled = false;
 
     public MacroFormRenderer(String macroLibraryPath, HttpServletRequest request, HttpServletResponse response) throws TemplateException, IOException {
         macroLibrary = FreeMarkerWorker.getTemplate(macroLibraryPath);
@@ -559,7 +558,8 @@ public class MacroFormRenderer implements FormStringRenderer {
             }
         }
         String id = modelFormField.getCurrentContainerId(context);
-        String formName = modelFormField.getModelForm().getCurrentFormName(context);
+        ModelForm modelForm = modelFormField.getModelForm();
+        String formName = FormRenderer.getCurrentFormName(modelForm, context);
         String timeDropdown = dateTimeField.getInputMethod();
         String timeDropdownParamName = "";
         String classString = "";
@@ -1069,7 +1069,7 @@ public class MacroFormRenderer implements FormStringRenderer {
         String title = modelFormField.getTitle(context);
         String name = modelFormField.getParameterName(context);
         String buttonType = submitField.getButtonType();
-        String formName = modelForm.getCurrentFormName(context);
+        String formName = FormRenderer.getCurrentFormName(modelForm, context);
         String imgSrc = submitField.getImageLocation(context);
         String confirmation = submitField.getConfirmation(context);
         String className = "";
@@ -1080,18 +1080,18 @@ public class MacroFormRenderer implements FormStringRenderer {
                 alert = "true";
             }
         }
-        String formId = modelForm.getCurrentContainerId(context);
+        String formId = FormRenderer.getCurrentContainerId(modelForm, context);
         List<ModelForm.UpdateArea> updateAreas = modelForm.getOnSubmitUpdateAreas();
         // This is here for backwards compatibility. Use on-event-update-area
         // elements instead.
         String backgroundSubmitRefreshTarget = submitField.getBackgroundSubmitRefreshTarget(context);
         if (UtilValidate.isNotEmpty(backgroundSubmitRefreshTarget)) {
             if (updateAreas == null) {
-                updateAreas = FastList.newInstance();
+                updateAreas = new LinkedList<ModelForm.UpdateArea>();
             }
             updateAreas.add(new ModelForm.UpdateArea("submit", formId, backgroundSubmitRefreshTarget));
         }
-        boolean ajaxEnabled = (updateAreas != null || UtilValidate.isNotEmpty(backgroundSubmitRefreshTarget)) && this.javaScriptEnabled;
+        boolean ajaxEnabled = (UtilValidate.isNotEmpty(updateAreas) || UtilValidate.isNotEmpty(backgroundSubmitRefreshTarget)) && this.javaScriptEnabled;
         String ajaxUrl = "";
         if (ajaxEnabled) {
             ajaxUrl = createAjaxParamsFromUpdateAreas(updateAreas, "", context);
@@ -1298,14 +1298,14 @@ public class MacroFormRenderer implements FormStringRenderer {
         }
         String formType = modelForm.getType();
         String targetWindow = modelForm.getTargetWindow(context);
-        String containerId = modelForm.getCurrentContainerId(context);
+        String containerId = FormRenderer.getCurrentContainerId(modelForm, context);
         String containerStyle = modelForm.getContainerStyle();
         String autocomplete = "";
-        String name = modelForm.getCurrentFormName(context);
+        String name = FormRenderer.getCurrentFormName(modelForm, context);
         String viewIndexField = modelForm.getMultiPaginateIndexField(context);
         String viewSizeField = modelForm.getMultiPaginateSizeField(context);
-        int viewIndex = modelForm.getViewIndex(context);
-        int viewSize = modelForm.getViewSize(context);
+        int viewIndex = Paginator.getViewIndex(modelForm, context);
+        int viewSize = Paginator.getViewSize(modelForm, context);
         boolean useRowSubmit = modelForm.getUseRowSubmit();
         if (!modelForm.getClientAutocompleteFields()) {
             autocomplete = "off";
@@ -1342,8 +1342,8 @@ public class MacroFormRenderer implements FormStringRenderer {
 
     public void renderFormClose(Appendable writer, Map<String, Object> context, ModelForm modelForm) throws IOException {
         String focusFieldName = modelForm.getfocusFieldName();
-        String formName = modelForm.getCurrentFormName(context);
-        String containerId = modelForm.getCurrentContainerId(context);
+        String formName = FormRenderer.getCurrentFormName(modelForm, context);
+        String containerId = FormRenderer.getCurrentContainerId(modelForm, context);
         String hasRequiredField = "";
         for (ModelFormField formField : modelForm.getFieldList()) {
             if (formField.getRequiredField()) {
@@ -1414,8 +1414,8 @@ public class MacroFormRenderer implements FormStringRenderer {
             this.renderNextPrev(writer, context, modelForm);
         }
         List<ModelFormField> childFieldList = modelForm.getFieldList();
-        List<String> columnStyleList = FastList.newInstance();
-        List<String> fieldNameList = FastList.newInstance();
+        List<String> columnStyleList = new LinkedList<String>();
+        List<String> fieldNameList = new LinkedList<String>();
         for (ModelFormField childField : childFieldList) {
             int childFieldType = childField.getFieldInfo().getFieldType();
             if (childFieldType == ModelFormField.FieldInfo.HIDDEN || childFieldType == ModelFormField.FieldInfo.IGNORED) {
@@ -1904,7 +1904,8 @@ public class MacroFormRenderer implements FormStringRenderer {
         StringBuilder imgSrc = new StringBuilder();
         // add calendar pop-up button and seed data IF this is not a "time" type date-find
         if (!"time".equals(dateFindField.getType())) {
-            formName = modelFormField.getModelForm().getCurrentFormName(context);
+            ModelForm modelForm = modelFormField.getModelForm();
+            formName = FormRenderer.getCurrentFormName(modelForm, context);
             defaultDateTimeString = UtilHttp.encodeBlanks(modelFormField.getEntry(context, dateFindField.getDefaultDateTimeString(context)));
             this.appendContentUrl(imgSrc, "/images/cal.gif");
         }
@@ -2012,10 +2013,10 @@ public class MacroFormRenderer implements FormStringRenderer {
                 autoCompleterTarget = lookupFieldFormName + "&amp;amp;";
             }
             autoCompleterTarget = autoCompleterTarget + "ajaxLookup=Y";
-            updateAreas = FastList.newInstance();
+            updateAreas = new LinkedList<ModelForm.UpdateArea>();
             updateAreas.add(new ModelForm.UpdateArea("change", id, autoCompleterTarget));
         }
-        boolean ajaxEnabled = updateAreas != null && this.javaScriptEnabled;
+        boolean ajaxEnabled = UtilValidate.isNotEmpty(updateAreas) && this.javaScriptEnabled;
         String autocomplete = "";
         if (!lookupField.getClientAutocompleteField() || !ajaxEnabled) {
             autocomplete = "off";
@@ -2025,7 +2026,8 @@ public class MacroFormRenderer implements FormStringRenderer {
         boolean readonly = lookupField.readonly;
         // add lookup pop-up button
         String descriptionFieldName = lookupField.getDescriptionFieldName();
-        String formName = modelFormField.getModelForm().getCurrentFormName(context);
+        ModelForm modelForm = modelFormField.getModelForm();
+        String formName = FormRenderer.getCurrentFormName(modelForm, context);
         StringBuilder targetParameterIter = new StringBuilder();
         StringBuilder imgSrc = new StringBuilder();
         // FIXME: refactor using the StringUtils methods
@@ -2184,12 +2186,12 @@ public class MacroFormRenderer implements FormStringRenderer {
         int paginatorNumber = WidgetWorker.getPaginatorNumber(context);
         String viewIndexParam = modelForm.getMultiPaginateIndexField(context);
         String viewSizeParam = modelForm.getMultiPaginateSizeField(context);
-        int viewIndex = modelForm.getViewIndex(context);
-        int viewSize = modelForm.getViewSize(context);
-        int listSize = modelForm.getListSize(context);
-        int lowIndex = modelForm.getLowIndex(context);
-        int highIndex = modelForm.getHighIndex(context);
-        int actualPageSize = modelForm.getActualPageSize(context);
+        int viewIndex = Paginator.getViewIndex(modelForm, context);
+        int viewSize = Paginator.getViewSize(modelForm, context);
+        int listSize = Paginator.getListSize(context);
+        int lowIndex = Paginator.getLowIndex(context);
+        int highIndex = Paginator.getHighIndex(context);
+        int actualPageSize = Paginator.getActualPageSize(context);
         // needed for the "Page" and "rows" labels
         Map<String, String> uiLabelMap = UtilGenerics.checkMap(context.get("uiLabelMap"));
         String pageLabel = "";
@@ -2936,8 +2938,9 @@ public class MacroFormRenderer implements FormStringRenderer {
         int paginatorNumber = WidgetWorker.getPaginatorNumber(context);
         String viewIndexField = modelFormField.modelForm.getMultiPaginateIndexField(context);
         String viewSizeField = modelFormField.modelForm.getMultiPaginateSizeField(context);
-        int viewIndex = modelFormField.modelForm.getViewIndex(context);
-        int viewSize = modelFormField.modelForm.getViewSize(context);
+        ModelForm modelForm = modelFormField.modelForm;
+        int viewIndex = Paginator.getViewIndex(modelForm, context);
+        int viewSize = Paginator.getViewSize(modelForm, context);
         if (viewIndexField.equals("viewIndex" + "_" + paginatorNumber)) {
             viewIndexField = "VIEW_INDEX" + "_" + paginatorNumber;
         }

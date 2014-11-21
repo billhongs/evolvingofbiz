@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simple-methods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/simple-methods.xsd">
+    <simple-method method-name="searchOrderPageDetails" short-description="Add Agent Role Type">
+        <set field="serviceResult" type="NewMap"/>
+        <set-service-fields service-name="getOrderSearchFacets" map="parameters" to-map="getOrderSearchFacetsCtx"/>
+        <call-service service-name="getOrderSearchFacets" in-map-name="getOrderSearchFacetsCtx">
+            <result-to-field result-name="result" field="serviceResult"/>
+        </call-service>
+        <set-service-fields service-name="searchOrderByFilters" map="parameters" to-map="searchOrderByFiltersCtx"/> 
+        <call-service service-name="searchOrderByFilters" in-map-name="searchOrderByFiltersCtx">
+            <result-to-field result-name="result" field="serviceResult"/>
+        </call-service>
+        <field-to-result field="serviceResult"/>
+    </simple-method>
+</simple-methods>

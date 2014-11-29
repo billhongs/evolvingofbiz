@@ -37,6 +37,7 @@ import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.enterprisesearch.SearchHelper;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntityException;
 import org.ofbiz.entity.GenericValue;
@@ -46,44 +47,15 @@ import org.ofbiz.party.party.PartyHelper;
 import org.ofbiz.service.DispatchContext;
 import org.ofbiz.service.ServiceUtil;
 
-public class OrderServices { 
-	
-	public static final String module = OrderServices.class.getName();
-
-    public static String getSolrHost(Delegator delegator, String coreName) {
-        String solrHost = UtilProperties.getPropertyValue("search", "solr.host");
-        if (UtilValidate.isNotEmpty(solrHost)) {
-            solrHost += "/" + coreName;
-            String tenantId = delegator.getDelegatorTenantId();
-            if (UtilValidate.isNotEmpty(tenantId)) {
-                solrHost = solrHost + "-" + tenantId;
-            }
-        }
-        return solrHost;
-    }
-
-    public static Map<String, Object> getPaginationValues(Integer viewSize, Integer viewIndex, Integer listSize) {
-        Map<String, Object> result = FastMap.newInstance();
-        if (UtilValidate.isNotEmpty(listSize)) {
-            Integer lowIndex = (viewIndex * viewSize) + 1;
-            Integer highIndex = (viewIndex + 1) * viewSize;
-            if (highIndex > listSize) {
-                highIndex = listSize;
-            }
-            Integer viewIndexLast = (listSize % viewSize) != 0 ? (listSize / viewSize + 1) : (listSize / viewSize);
-            result.put("lowIndex", lowIndex);
-            result.put("highIndex", highIndex);
-            result.put("viewIndexLast", viewIndexLast);
-        }
-        return result;
-    }
+public class OrderServices {
+    public static final String module = OrderServices.class.getName();
 
     public static Map<String, Object> createOrderIndex(DispatchContext dctx, Map<String, ? extends Object> context) {
         Delegator delegator = dctx.getDelegator();
         String orderId = (String) context.get("orderId");
         Locale locale = (Locale) context.get("locale");
-        String solrHost = getSolrHost(delegator, "orders");
-        String enterpriseSearchHost = getSolrHost(delegator, "enterpriseSearch");
+        String solrHost = SearchHelper.getSolrHost(delegator, "orders");
+        String enterpriseSearchHost = SearchHelper.getSolrHost(delegator, "enterpriseSearch");
         try {
             HttpSolrServer server = new HttpSolrServer(solrHost);
             HttpSolrServer enterpriseSearchServer = new HttpSolrServer(enterpriseSearchHost);
@@ -126,8 +98,8 @@ public class OrderServices {
     public static Map<String, Object> createOrdersIndex(DispatchContext dctx, Map<String, ? extends Object> context) {
         Delegator delegator = dctx.getDelegator();
         Locale locale = (Locale) context.get("locale");
-        String solrHost = getSolrHost(delegator, "orders");
-        String enterpriseSearchHost = getSolrHost(delegator, "enterpriseSearch");
+        String solrHost = SearchHelper.getSolrHost(delegator, "orders");
+        String enterpriseSearchHost = SearchHelper.getSolrHost(delegator, "enterpriseSearch");
         EntityListIterator eli = null;
         int unCommittedDocs = 0;
         int unCommittedDocsLimit = 100;

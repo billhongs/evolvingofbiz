@@ -14,19 +14,16 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
- -->
+-->
 
 <service-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/service-eca.xsd">
 
-    <eca service="changeOrderStatus" event="global-commit-post-run">
-        <action service="createOrderIndex" mode="sync"/>
+    <eca service="createReturnForOrder" event="global-commit-post-run">
+        <action service="createReturnIndex" mode="sync"/>
     </eca>
-    <eca service="updateOrderStatusFromReceipt" event="global-commit-post-run">
-        <action service="createOrderIndex" mode="sync"/>
-    </eca>
-    <eca service="storeOrder" event="global-commit-post-run">
-        <action service="createOrderIndex" mode="sync"/>
+    <eca service="updateReturnHeader" event="global-commit-post-run">
+        <action service="createReturnIndex" mode="sync"/>
     </eca>
 
 </service-eca>

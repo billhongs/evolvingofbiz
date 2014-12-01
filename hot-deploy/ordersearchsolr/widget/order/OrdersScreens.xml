@@ -25,8 +25,7 @@ under the License.
             <actions>
                 <set field="titleProperty" value="Order Search"/>
                 <set field="headerItem" value="Orders"/>
-                <script location="component://orderSearchSolr/webapp/order/WEB-INF/actions/GetOrderSearchFacets.groovy"/>
-                <script location="component://orderSearchSolr/webapp/order/WEB-INF/actions/SearchOrderByFilters.groovy"/>
+                <script location="component://orderSearchSolr/webapp/order/WEB-INF/actions/FindOrders.groovy"/>
             </actions>
             <widgets>
                 <decorator-screen name="orderSearchSolrCommonDecorator" location="${parameters.mainDecoratorLocation}">

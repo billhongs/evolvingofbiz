@@ -29,7 +29,9 @@ import javolution.util.FastMap;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
@@ -76,6 +78,172 @@ public class OrderServices {
         return result;
     }
 
+    public static Map<String, Object> createOrderIndex(DispatchContext dctx, Map<String, ? extends Object> context) {
+        Delegator delegator = dctx.getDelegator();
+        String orderId = (String) context.get("orderId");
+        Locale locale = (Locale) context.get("locale");
+        String solrHost = getSolrHost(delegator, "orders");
+        String enterpriseSearchHost = getSolrHost(delegator, "enterpriseSearch");
+        try {
+            HttpSolrServer server = new HttpSolrServer(solrHost);
+            HttpSolrServer enterpriseSearchServer = new HttpSolrServer(enterpriseSearchHost);
+            GenericValue order = delegator.findOne("OrderHeader", UtilMisc.toMap("orderId", orderId), false);
+            SolrDocument solrDocument = new SolrDocument();
+            solrDocument.addField("orderId", orderId);
+            solrDocument.addField("orderTypeId", order.get("orderTypeId"));
+            solrDocument.addField("statusId", order.get("statusId"));
+            GenericValue orderItem = EntityUtil.getFirst(order.getRelated("OrderItem", null, null, false));
+            if(UtilValidate.isNotEmpty(orderItem.get("correspondingPoId"))) {
+                solrDocument.addField("correspondingPoId", orderItem.get("correspondingPoId"));
+            }
+            // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
+            DateFormat df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
+            solrDocument.addField("orderDate", df.format(order.get("orderDate")));
+            String roleTypeId = "BILL_TO_CUSTOMER";
+            if ("PURCHASE_ORDER".equals(order.getString("orderTypeId"))) {
+                roleTypeId = "BILL_FROM_VENDOR";
+            }
+            GenericValue orderRole = EntityUtil.getFirst(order.getRelated("OrderRole", UtilMisc.toMap("roleTypeId", roleTypeId), null, false));
+            solrDocument.addField("customer", PartyHelper.getPartyName(delegator, orderRole.getString("partyId"), false));
+            solrDocument.addField("salesChannelEnumId", order.get("salesChannelEnumId"));
+            SolrInputDocument doc= ClientUtils.toSolrInputDocument(solrDocument);
+            server.add(doc);
+            server.commit();
+            doc.addField("docType", "ORDER");
+            doc.addField("identifier", orderId);
+            doc.addField("title", "Order " + orderId + " placed by " + doc.getFieldValue("customer") + " on "+ order.get("orderDate") + ".");
+            enterpriseSearchServer.add(doc);
+        } catch (GenericEntityException e) {
+            Debug.logError(e, module);
+        } catch (IOException e) {
+            Debug.logError(e, module);
+        } catch (SolrServerException e) {
+            Debug.logError(e, module);
+        }
+        return ServiceUtil.returnSuccess();
+    }
+
+    public static Map<String, Object> createOrdersIndex(DispatchContext dctx, Map<String, ? extends Object> context) {
+        Delegator delegator = dctx.getDelegator();
+        Locale locale = (Locale) context.get("locale");
+        String solrHost = getSolrHost(delegator, "orders");
+        String enterpriseSearchHost = getSolrHost(delegator, "enterpriseSearch");
+        EntityListIterator eli = null;
+        int unCommittedDocs = 0;
+        int unCommittedDocsLimit = 100;
+        if(UtilValidate.isNotEmpty(context.get("unCommittedDocsLimit"))) {
+            unCommittedDocsLimit = (Integer) context.get("unCommittedDocsLimit");
+        }
+        try {
+            HttpSolrServer server = new HttpSolrServer(solrHost);
+            HttpSolrServer enterpriseSearchServer = new HttpSolrServer(enterpriseSearchHost);
+            eli = delegator.find("OrderHeader", null, null, null, null, null);
+            GenericValue order;
+            // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
+            DateFormat df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
+            while ((order = eli.next())!= null) {
+                SolrDocument solrDocument = new SolrDocument();
+                solrDocument.addField("orderId", order.get("orderId"));
+                solrDocument.addField("orderTypeId", order.get("orderTypeId"));
+                solrDocument.addField("statusId", order.get("statusId"));
+                GenericValue orderItem = EntityUtil.getFirst(order.getRelated("OrderItem", null, null, false));
+                if(UtilValidate.isNotEmpty(orderItem.get("correspondingPoId"))) {
+                    solrDocument.addField("correspondingPoId", order.get("correspondingPoId"));
+                }
+                solrDocument.addField("orderDate", df.format(order.get("orderDate")));
+                String roleTypeId = "BILL_TO_CUSTOMER";
+                if ("PURCHASE_ORDER".equals(order.getString("orderTypeId"))) {
+                    roleTypeId = "BILL_FROM_VENDOR";
+                }
+                GenericValue orderRole = EntityUtil.getFirst(order.getRelated("OrderRole", UtilMisc.toMap("roleTypeId", roleTypeId), null, false));
+                solrDocument.addField("customer", PartyHelper.getPartyName(delegator, orderRole.getString("partyId"), false));
+                solrDocument.addField("salesChannelEnumId", order.get("salesChannelEnumId"));
+                SolrInputDocument doc= ClientUtils.toSolrInputDocument(solrDocument);
+                server.add(doc);
+                doc.addField("docType", "ORDER");
+                doc.addField("identifier", order.get("orderId"));
+                DateFormat dfString = UtilDateTime.toDateTimeFormat("M-d-yyyy h:mm a", TimeZone.getDefault(), locale);
+                doc.addField("orderDateString", dfString.format(order.get("orderDate")));
+                doc.addField("title", "Order " + order.get("orderId") + " placed by " + doc.getFieldValue("customer") + " on "+ dfString.format(order.get("orderDate")) + ".");
+                enterpriseSearchServer.add(doc);
+                unCommittedDocs = unCommittedDocs + 1;
+                if(unCommittedDocs >= unCommittedDocsLimit) {
+                    server.commit();
+                    unCommittedDocs = 0;
+                }
+            }
+            if(unCommittedDocs > 0) {
+                server.commit();
+            }
+        } catch (GenericEntityException e){
+            Debug.logError(e.getMessage(), module);
+        } catch (IOException e) {
+            Debug.logError(e, module);
+        } catch (SolrServerException e) {
+            Debug.logError(e, module);
+        } finally {
+            if (eli != null) {
+                try {
+                    eli.close();
+                } catch (GenericEntityException gee) {
+                    Debug.logError(gee, "Error closing EntityListIterator for finding OrderHeaders", module);
+                }
+            }
+        }
+        return ServiceUtil.returnSuccess();
+    }
+
+    /*TODO: Please remove the following service as this service will no more usable after enterprise search.*/
+    public static Map<String, Object> indexOrder(DispatchContext dctx, Map<String, ? extends Object> context) {
+        Delegator delegator = dctx.getDelegator();
+        String orderId = (String) context.get("orderId");
+        Locale locale = (Locale) context.get("locale");
+        String solrHost = getSolrHost(delegator, "orders");
+        HttpSolrServer server = new HttpSolrServer(solrHost);
+        SolrInputDocument solrDocument = new SolrInputDocument();
+        GenericValue order = null;
+        try {
+            order = delegator.findOne("OrderHeader", UtilMisc.toMap("orderId", orderId), false);
+        } catch (GenericEntityException e) {
+            Debug.logError(e, module);
+        }
+        solrDocument.addField("orderId", orderId);
+        solrDocument.addField("orderTypeId", order.get("orderTypeId"));
+        solrDocument.addField("statusId", order.get("statusId"));
+        GenericValue orderItem = null;
+        try {
+            orderItem = EntityUtil.getFirst(order.getRelated("OrderItem", null, null, false));
+        } catch (GenericEntityException e) {
+            Debug.logError(e, module);
+        }
+        // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
+        DateFormat df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
+        solrDocument.addField("orderDate", df.format(order.get("orderDate")));
+        String roleTypeId = "BILL_TO_CUSTOMER";
+        if ("PURCHASE_ORDER".equals(order.getString("orderTypeId"))) {
+            roleTypeId = "BILL_FROM_VENDOR";
+        }
+        GenericValue orderRole = null;
+        try {
+            orderRole = EntityUtil.getFirst(order.getRelated("OrderRole", UtilMisc.toMap("roleTypeId", roleTypeId), null, false));
+        } catch (GenericEntityException e) {
+            Debug.logError(e, module);
+        }
+        solrDocument.addField("customer", PartyHelper.getPartyName(delegator, orderRole.getString("partyId"), false));
+        solrDocument.addField("salesChannelEnumId", order.get("salesChannelEnumId"));
+        
+        try {
+            server.add(solrDocument);
+            server.commit();
+        } catch (SolrServerException e) {
+            Debug.logError(e, module);
+        } catch (IOException e) {
+            Debug.logError(e, module);
+        }
+        return ServiceUtil.returnSuccess();
+    }
+    
+    /*TODO: Remove the following code as this is no more usable.*/
     public static Map<String, Object> indexOrders(DispatchContext dctx, Map<String, ? extends Object> context) {
         Delegator delegator = dctx.getDelegator();
         Locale locale = (Locale) context.get("locale");
@@ -146,55 +314,6 @@ public class OrderServices {
             }
         }
 
-        return ServiceUtil.returnSuccess();
-    }
-
-    public static Map<String, Object> indexOrder(DispatchContext dctx, Map<String, ? extends Object> context) {
-        Delegator delegator = dctx.getDelegator();
-        String orderId = (String) context.get("orderId");
-        Locale locale = (Locale) context.get("locale");
-        String solrHost = getSolrHost(delegator, "orders");
-        HttpSolrServer server = new HttpSolrServer(solrHost);
-        SolrInputDocument solrDocument = new SolrInputDocument();
-        GenericValue order = null;
-        try {
-            order = delegator.findOne("OrderHeader", UtilMisc.toMap("orderId", orderId), false);
-        } catch (GenericEntityException e) {
-            Debug.logError(e, module);
-        }
-        solrDocument.addField("orderId", orderId);
-        solrDocument.addField("orderTypeId", order.get("orderTypeId"));
-        solrDocument.addField("statusId", order.get("statusId"));
-        GenericValue orderItem = null;
-        try {
-            orderItem = EntityUtil.getFirst(order.getRelated("OrderItem", null, null, false));
-        } catch (GenericEntityException e) {
-            Debug.logError(e, module);
-        }
-        // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
-        DateFormat df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
-        solrDocument.addField("orderDate", df.format(order.get("orderDate")));
-        String roleTypeId = "BILL_TO_CUSTOMER";
-        if ("PURCHASE_ORDER".equals(order.getString("orderTypeId"))) {
-            roleTypeId = "BILL_FROM_VENDOR";
-        }
-        GenericValue orderRole = null;
-        try {
-            orderRole = EntityUtil.getFirst(order.getRelated("OrderRole", UtilMisc.toMap("roleTypeId", roleTypeId), null, false));
-        } catch (GenericEntityException e) {
-            Debug.logError(e, module);
-        }
-        solrDocument.addField("customer", PartyHelper.getPartyName(delegator, orderRole.getString("partyId"), false));
-        solrDocument.addField("salesChannelEnumId", order.get("salesChannelEnumId"));
-        
-        try {
-            server.add(solrDocument);
-            server.commit();
-        } catch (SolrServerException e) {
-            Debug.logError(e, module);
-        } catch (IOException e) {
-            Debug.logError(e, module);
-        }
         return ServiceUtil.returnSuccess();
     }
 }

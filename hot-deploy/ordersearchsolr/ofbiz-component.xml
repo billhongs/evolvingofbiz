@@ -35,7 +35,7 @@ under the License.
     <!-- service resources: model(s), eca(s) and group definitions -->
     <service-resource type="model" loader="main" location="servicedef/orders/services.xml"/>
     <service-resource type="eca" loader="main" location="servicedef/orders/secas.xml"/>
-    
+
     <!-- Orders data  -->
     <entity-resource type="data" reader-name="ext-seed" loader="main" location="data/orders/OrderMenuData.xml"/>
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Order Search</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" rel="stylesheet" type="text/css">
+    <link href="css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="css/datepicker.min.css" rel="stylesheet">
+  </head>
+  
+  <body data-ng-app="orderSearch">
+    <div class="container">
+      <div class="row">                           <!--Page header start-->
+        <div class="col-sm-12">
+          <ul class="breadcrumb">
+            <li class="active">
+              <span class="flipper-title">
+                Orders
+              </span>          
+            </li>
+          </ul>
+        </div>
+      </div>                                      <!--Header end-->
+
+      <div class="row">                           
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-3 col-md-3">
+              <section class="well well-sm">
+                <form>
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12 right-inner-addon">
+                      <span class="glyphicon glyphicon-search"></span>
+                      <input class="form-control" type="text" data-ng-model="searchText" placeholder="Order Search"></input>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-md-12">
+                      <button class="btn btn-primary" type="submit">Find</button> 
+                    </div>
+                  </div>
+                </form>
+                <div data-ng-controller="orderFacetController">
+                    <div class="row"><!--status panel start-->
+                      <div class="col-lg-12">
+                        <div class="panel panel-default">
+                          <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">           
+                            <span class="head"><strong>Status</strong></span> 
+                            <span class="glyphicon glyphicon-resize-vertical pull-right"></span>
+                          </div>
+                          <div id="collapseOne" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                              <div class="checkbox" data-ng-repeat="status in result.facetStatus">
+                                <label><input type="checkbox" value="{{state}}" onClick="if (this.checked) {window.location = this.value; } else {window.location = '#'}">{{status.description}} ({{status.statusCount}})
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="panel panel-default">
+                          <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">           
+                            <span class="head"><strong>Sales Channel</strong></span> 
+                            <span class="glyphicon glyphicon-resize-vertical pull-right"></span>
+                          </div>
+                          <div id="collapseTwo" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                              <div class="radio" data-ng-repeat="channel in result.facetChannels">
+                                <label><input type="radio" name="radiochannel"  value="#table/{{channel}}" onClick="if (this.checked) {window.location = this.value; } else {window.location = '#'}"></input>{{channel.description}} ({{channel.channelCount}})
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                </div>
+              </section>                
+            </div>
+            <div class="col-lg-9 col-md-9">        <!--Table starts here!-->
+              <div data-ng-view>
+
+              </div>
+            </div>                                  <!--table ends here-->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="data.js" type="text/javascript"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script>
+    
+    </script>
+  </body>
+</html>

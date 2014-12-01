@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <SecurityGroupPermission groupId="FULLADMIN" permissionId="SEARCHAPP_ADMIN"/>
+    <SecurityGroupPermission groupId="FLEXADMIN" permissionId="SEARCHAPP_CREATE"/>
+    <SecurityGroupPermission groupId="FLEXADMIN" permissionId="SEARCHAPP_DELETE"/>
+    <SecurityGroupPermission groupId="FLEXADMIN" permissionId="SEARCHAPP_UPDATE"/>
+    <SecurityGroupPermission groupId="FLEXADMIN" permissionId="SEARCHAPP_VIEW"/>
+    <SecurityGroupPermission groupId="VIEWADMIN" permissionId="SEARCHAPP_VIEW"/>
+    <SecurityGroupPermission groupId="BIZADMIN" permissionId="SEARCHAPP_ADMIN"/>
+</entity-engine-xml>

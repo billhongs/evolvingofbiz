@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <SecurityPermission description="View operations in the SearchApp Component." permissionId="SEARCHAPP_VIEW"/>
+    <SecurityPermission description="Create operations in the SearchApp Component." permissionId="SEARCHAPP_CREATE"/>
+    <SecurityPermission description="Update operations in the SearchApp Component." permissionId="SEARCHAPP_UPDATE"/>
+    <SecurityPermission description="Delete operations in the SearchApp Component." permissionId="SEARCHAPP_DELETE"/>
+    <SecurityPermission description="ALL operations in the SearchApp Component." permissionId="SEARCHAPP_ADMIN"/>
+
+    <SecurityGroupPermission groupId="SUPER" permissionId="SEARCHAPP_ADMIN"/>
+
+</entity-engine-xml>

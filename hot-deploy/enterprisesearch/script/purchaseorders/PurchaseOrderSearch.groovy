@@ -59,7 +59,6 @@ def getPurchaseOrderSearchFacets () {
     //Days Filter Query
     daysFilterQuery = "";
     nowTimestamp = UtilDateTime.nowTimestamp();
-    println "============nowtimestamp================${nowTimestamp}=============";
     dayStart = UtilDateTime.getDayStart(nowTimestamp);
     if (parameters.minDate || parameters.maxDate) {
         // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
@@ -236,7 +235,8 @@ def getPurchaseOrderSearchFacets () {
 }
 
 def getPurchaseOrderSearchResults () {
-    result = [];
+    result = [:];
+    userLogin = delegator.findOne("UserLogin", [userLoginId : "system"], false);
     keyword = parameters.keyword?.trim() ?: "";
     customer = parameters.customer?.trim() ?: "";
     viewSize = Integer.valueOf(parameters.viewSize ?: 20);

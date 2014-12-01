@@ -4,15 +4,17 @@ import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.ofbiz.base.util.UtilDateTime;
+import org.ofbiz.enterprisesearch.SearchHelper;
 import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.order.order.OrderReadHelper;
 import org.ofbiz.party.party.PartyHelper;
+import org.ofbiz.service.ServiceUtil;
 import java.sql.Timestamp;
 
 def getPurchaseOrderSearchFacets () {
-    result = [];
+    result = [:];
     keyword = parameters.keyword?.trim() ?: "";
 
     // Get server object
@@ -56,6 +58,8 @@ def getPurchaseOrderSearchFacets () {
     
     //Days Filter Query
     daysFilterQuery = "";
+    nowTimestamp = UtilDateTime.nowTimestamp();
+    println "============nowtimestamp================${nowTimestamp}=============";
     dayStart = UtilDateTime.getDayStart(nowTimestamp);
     if (parameters.minDate || parameters.maxDate) {
         // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.

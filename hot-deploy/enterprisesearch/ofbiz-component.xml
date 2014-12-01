@@ -21,6 +21,7 @@
     <service-resource type="model" loader="main" location="servicedef/shipments/services.xml"/>
     <service-resource type="model" loader="main" location="servicedef/returns/services.xml"/>
     <service-resource type="model" loader="main" location="servicedef/products/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/purchaseorders/services.xml"/>
     <service-resource type="model" loader="main" location="servicedef/services.xml"/>
 
     <service-resource type="eca" loader="main" location="servicedef/orders/secas.xml"/>
@@ -28,6 +29,7 @@
     <service-resource type="eca" loader="main" location="servicedef/shipments/secas.xml"/>
     <service-resource type="eca" loader="main" location="servicedef/returns/secas.xml"/>
     <service-resource type="eca" loader="main" location="servicedef/products/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/purchaseorders/secas.xml"/>
 
     <!--
     <service-resource type="eca" loader="main" location="servicedef/secas.xml"/>

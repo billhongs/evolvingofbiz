@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofbiz-component name="enterprisesearch"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-component.xsd">
+    <!-- define resource loaders; most common is to use the component resource loader -->
+    <resource-loader name="main" type="component"/>
+
+    <!-- place the config directory on the classpath to access configuration files -->
+    <classpath type="dir" location="config"/>
+    <classpath type="dir" location="dtd"/>
+
+    <!-- load single or multiple external libraries -->
+    <classpath type="jar" location="build/lib/*"/>
+    <classpath type="jar" location="lib/*"/>
+    <classpath type="dir" location="script"/>
+
+    <!-- service resources: model(s), eca(s) and group definitions -->
+    <service-resource type="model" loader="main" location="servicedef/customers/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/orders/services.xml"/>
+
+    <service-resource type="model" loader="main" location="servicedef/shipments/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/returns/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/products/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/purchaseorders/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/services.xml"/>
+
+    <service-resource type="eca" loader="main" location="servicedef/orders/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/customers/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/shipments/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/returns/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/products/secas.xml"/>
+    <service-resource type="eca" loader="main" location="servicedef/purchaseorders/secas.xml"/>
+
+    <!--
+    <service-resource type="eca" loader="main" location="servicedef/secas.xml"/>
+    <service-resource type="group" loader="main" location="servicedef/groups.xml"/>
+    -->
+
+    <!-- web applications; will be mounted when using the embedded container -->
+    <webapp name="enterprisesearch"
+        title="EnterpriseSearch"
+        server="default-server"
+        location="webapp/enterprisesearch"
+        base-permission="OFBTOOLS,ENTERPRISESEARCH"
+        mount-point="/enterprisesearch"/>
+</ofbiz-component>

@@ -1,0 +1,10 @@
+#Customer_information {
+    word-break: break-all;
+    overflow-y: hidden;
+}
+
+@media only screen and (max-device-width : 480px) {
+    .name {
+        font-size: 18px;
+    }
+}

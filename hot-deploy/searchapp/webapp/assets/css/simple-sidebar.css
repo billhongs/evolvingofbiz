@@ -1,0 +1,91 @@
+  #sidebar-wrapper {
+    margin-right: -250px;
+    right: 0;
+    top:0;
+    width: 20px;
+    background: none repeat scroll 0% 0% #333;
+    opacity: 0.9;
+    position: fixed;
+    height: 100%;
+    overflow-y: hidden;
+    z-index: 1000;
+    transition: all 0.5s ease-in 0.5s;
+    -webkit-transition: all 0.5s ease-in 0.5s;
+    -moz-transition: all 0.5s ease-in 0.5s;
+    -ms-transition: all 0.5s ease-in 0.5s;
+    -o-transition: all 0.5s ease-in 0.5s;
+  }
+
+  .sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar-nav li {
+    line-height: 50px;
+    text-indent: 20px;
+    border: 1px solid #333333;
+  }
+
+  .sidebar-nav li a {
+    color: #FFF;
+    display: block;
+    text-decoration: none;
+  }
+
+  .sidebar-nav li a:hover {
+    color: #999999;
+    background: rgba(255,255,255,0.2);
+    text-decoration: none;
+  }
+
+  .sidebar-nav li a:active, .sidebar-nav li a:focus {
+    text-decoration: none;
+  }
+
+  .sidebar-nav > .sidebar-brand {
+    height: 55px;
+    line-height: 55px;
+    font-size: 18px;
+  }
+
+  .sidebar-nav > .sidebar-brand a {
+    color: #fff;
+  }
+
+  .sidebar-nav > .sidebar-brand a:hover {
+    color: #000;
+    background: none;
+  }
+
+  #menu-toggle {
+    top: 45%;
+    left: 0;
+    position: fixed;
+    z-index: 1;
+  }
+
+  #sidebar-wrapper.active {
+    left: 0px;
+    width: 200px;
+    transition: all 0.5s ease-out 0s;
+    -webkit-transition: all 0.5s ease-out 0s;
+    -moz-transition: all 0.5s ease-out 0s;
+    -ms-transition: all 0.5s ease-out 0s;
+    -o-transition: all 0.5s ease-out 0s;
+  }
+
+  .toggle {
+    margin: 5px 5px 0 0;
+  }
+  .toggle2 {
+    top: 220px;
+    left: 80%;
+    position: inherit;
+    z-index: 1;
+  }
+

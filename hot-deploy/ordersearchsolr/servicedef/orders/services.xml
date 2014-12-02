@@ -25,14 +25,13 @@ under the License.
     <version>1.0</version>
 
     <!-- Create indexes in solr for all past Orders. -->
-    <service name="indexOrders" engine="java" auth="true" require-new-transaction="true"
+    <service name="indexOrdersV1" engine="java" auth="true" require-new-transaction="true"
             location="org.ofbiz.orders.OrderServices" invoke="indexOrders" transaction-timeout="7200">
         <description>Creates indexes for orders.</description>
         <attribute name="unCommittedDocsLimit" type="Integer" mode="IN" optional="true"/>
     </service>
-
     <!-- Create index in solr for an Order. -->
-    <service name="indexOrder" engine="java" auth="true" require-new-transaction="true"
+    <service name="indexOrderV1" engine="java" auth="true" require-new-transaction="true"
             location="org.ofbiz.orders.OrderServices" invoke="indexOrder" transaction-timeout="7200">
         <description>Creates index for an order.</description>
         <attribute name="orderId" type="String" mode="IN" optional="false"/>

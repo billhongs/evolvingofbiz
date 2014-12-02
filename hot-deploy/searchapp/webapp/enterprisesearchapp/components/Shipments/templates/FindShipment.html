@@ -1,0 +1,109 @@
+<div class="row">
+  <div class="col-sm-4 col-md-3 col-lg-3">
+    <section class="well well-sm">
+      <form role="form">
+        <div class="form-group">
+          <input type="text" name="keyword" class="form-control" autofocus="autofocus" placeholder="Shipment/ Order/ Customer" ng-model="shipment">
+        </div>
+        <button type="submit" class="btn btn-primary">Find</button>
+      </form>
+      <br/>
+      <!--shipment Status Panel-->
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="panel panel-default" id="status">
+            <div class="panel-heading">
+              <h2 class="panel-title">
+                <button id="clear_btn" class="btn btn-default pull-right">Clear</button>
+                <div id="panel_title">Status</div>
+              </h2>
+            </div>
+            <div class="panel_label panel-body">
+              <div class="checkbox" data-ng-repeat="ShipmentStaus in Status">
+                <label for="{{ShipmentStaus}}" class="btn btn-default btn-block">
+
+                <input type="checkbox" id="{{ShipmentStaus}}">{{ShipmentStaus}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Shipment Type Panel-->
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="panel panel-default" id="shipment_type">
+            <div class="panel-heading">
+              <h2 class="panel-title">
+                <div id="panel_title">Type</div>
+              </h2>
+            </div>
+            <div class="panel_label panel-body">
+              <div class="checkbox" data-ng-repeat="ShipmentType in Type">
+                <label for="{{ShipmentType}}" class="btn-block">
+                <input type="checkbox" id="{{ShipmentType}}">{{ShipmentType}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!--Search Result Panel-->
+  <div class="col-sm-8 col-md-9 col-lg-9" id="search_panel">
+    <div class="panel panel-default" id="search_results">
+      <div class="panel-heading">
+        <h2 class="panel-title ">
+          <div id="panel_title">Search Results</div>
+        </h2>
+      </div>
+      <table class="table table-striped table-bordered">
+        <thead class="hidden-xs">
+          <tr>
+            <td>
+              <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-3"><b>Shipment</b></div>
+                <div class="col-sm-4 col-md-4 col-lg-3"><b>Order/Return</b></div>
+                <div class="col-sm-4 col-md-4 col-lg-6"><b>Customer/Supplier</b></div>
+              </div>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="information in shipment_basic_information">
+            <td>
+              <div class="row" onClick="{window.location ='#/ViewShipment'}" style="cursor:pointer;">
+                <div class="col-sm-4 col-md-4 col-lg-3" id="tbody_content">
+                  <ul>
+                    <li>
+                      <b  class="hidden-md hidden-sm hidden-lg li_content_margin">Shipment :</b>
+                      <a href="#/ViewShipment">{{information.shipment_id}}</a> 
+                      <span class="label {{information.shipment_label_class}}">{{information.shipment_status}}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-3" id="tbody_content">
+                  <ul>
+                    <li>
+                      <b class="hidden-md hidden-sm hidden-lg li_content_margin">Order/Return :</b>
+                      {{information.order_or_return_id}}<span class="label {{information.order_or_return_label_class}}">{{information.order_or_return_status}}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-6"> 
+                  {{information.customer_or_supplier}}<a href=""> [{{information.customer_or_supplier_id}}]</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+ 
+<!-- Side Panel -->
+
+    
+<link href="css/style-FindShipment.css" rel="stylesheet">

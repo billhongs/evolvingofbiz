@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+    <description>Enterpise Solr search Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+    <service name="createReturnIndex" engine="java"
+            location="org.ofbiz.returns.ReturnServices" invoke="createReturnIndex" auth="true" transaction-timeout="7200">
+        <description>Create Solr Indexes of a Return for Order</description>
+        <attribute name="returnId" type="String" mode="IN"/>
+    </service>
+    <service name="createReturnsIndex" engine="java"
+            location="org.ofbiz.returns.ReturnServices" invoke="createReturnsIndex" auth="true" transaction-timeout="7200">
+        <description>Create Solr Indexes of all Returns</description>
+    </service>
+    <service name="getReturnSearchFacets" engine="groovy"
+            location="component://enterprisesearch/script/returns/ReturnSearch.groovy" invoke="getReturnSearchFacets" auth="false">
+        <description>Service will provide every required information for facets on Find Returns page.</description>
+        <attribute name="keyword" mode="IN" type="String" optional="true"/>
+        <attribute name="status" mode="IN" type="String" optional="true"/>
+        <attribute name="days" mode="IN" type="String" optional="true"/>
+        <attribute name="minDate" mode="IN" type="Timestamp" optional="true"/>
+        <attribute name="maxDate" mode="IN" type="Timestamp" optional="true"/>
+        <attribute name="result" mode="OUT" type="Map" optional="false"/>
+    </service>
+    <service name="getReturnSearchResults" engine="groovy"
+            location="component://enterprisesearch/script/returns/ReturnSearch.groovy" invoke="getReturnSearchFacets" auth="false">
+        <description>Service will provide every required information for Search part of Find returns page.</description>
+        <attribute name="keyword" mode="IN" type="String" optional="true"/>
+        <attribute name="status" mode="IN" type="String" optional="true"/>
+        <attribute name="days" mode="IN" type="String" optional="true"/>
+        <attribute name="minDate" mode="IN" type="Timestamp" optional="true"/>
+        <attribute name="maxDate" mode="IN" type="Timestamp" optional="true"/>
+        <attribute name="viewSize" mode="IN" type="String" optional="true"/>
+        <attribute name="viewIndex" mode="IN" type="String" optional="true"/>
+        <attribute name="result" mode="OUT" type="Map" optional="false"/>
+    </service>
+</services>

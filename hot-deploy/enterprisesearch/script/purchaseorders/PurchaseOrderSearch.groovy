@@ -343,7 +343,7 @@ def getPurchaseOrderSearchResults () {
             partyId = supplier.partyId;
         }
         orderInfo.orderId = order.orderId;
-        orderInfo.orderDate = order.orderDate;
+        orderInfo.orderDate = UtilDateTime.toDateString(order.orderDate);
         orderInfo.uom = orderReadHelper.getCurrency();
         orderInfo.partyId = partyId;
         orderInfo.supplierName = PartyHelper.getPartyName(delegator, partyId, false);

@@ -94,7 +94,7 @@ public class EntityDataLoadContainer implements Container {
         ServiceDispatcher.enableSvcs(false);
 
         /*
-           install arguments:
+           load-data arguments:
            readers (none, all, seed, demo, ext, etc - configured in entityengine.xml and associated via ofbiz-component.xml)
            timeout (transaction timeout default 7200)
            delegator (overrides the delegator name configured for the container)
@@ -103,8 +103,11 @@ public class EntityDataLoadContainer implements Container {
            file (import a specific XML file)
 
            Example:
-           $ java -jar ofbiz.jar -install -readers=seed,demo,ext -timeout=7200 -delegator=default -group=org.ofbiz
-           $ java -jar ofbiz.jar -install -file=/tmp/dataload.xml
+           $ java -jar ofbiz.jar -load-data -readers=seed,demo,ext -timeout=7200 -delegator=default -group=org.ofbiz
+           $ java -jar ofbiz.jar -load-data -file=/tmp/dataload.xml
+           Currently no dashes before load-data, see OFBIZ-5872
+               $ java -jar ofbiz.jar load-data -readers=seed,demo,ext -timeout=7200 -delegator=default -group=org.ofbiz
+               $ java -jar ofbiz.jar load-data -file=/tmp/dataload.xml
         */
         if (args != null) {
             for (String argument: args) {
@@ -174,8 +177,10 @@ public class EntityDataLoadContainer implements Container {
                         createConstraints = true;
                     }
                 } else if ("help".equalsIgnoreCase(argumentName)) {
+                    //"java -jar ofbiz.jar -load-data [options]\n" +
+                    // Currently no dashes before load-data, see OFBIZ-5872
                     String helpStr = "\n--------------------------------------\n" +
-                    "java -jar ofbiz.jar -install [options]\n" +
+                    "java -jar ofbiz.jar load-data [options]\n" +
                     "-component=[name] .... only load from a specific component\n" +
                     "-delegator=[name] .... use the defined delegator (default-no-eca)\n" +
                     "-group=[name] ........ override the entity group (org.ofbiz)\n" +
@@ -203,6 +208,7 @@ public class EntityDataLoadContainer implements Container {
     /**
      * @see org.ofbiz.base.container.Container#start()
      */
+    @Override
     public boolean start() throws ContainerException {
         if("all-tenants".equals(this.overrideDelegator)) {
             if (!EntityUtil.isMultiTenantEnabled()) {
@@ -319,33 +325,24 @@ public class EntityDataLoadContainer implements Container {
         List<String> loadComponents = new LinkedList<String>();
         if (UtilValidate.isNotEmpty(delegator.getDelegatorTenantId()) && EntityUtil.isMultiTenantEnabled()) {
             try {
-                List<EntityExpr> exprs = new ArrayList<EntityExpr>();
-                exprs.add(EntityCondition.makeCondition("rootLocation", EntityOperator.NOT_LIKE, "%hot-deploy%"));
-                EntityCondition cond = EntityCondition.makeCondition(exprs);
-                List<GenericValue> components = baseDelegator.findList("Component", cond , null, UtilMisc.toList("lastUpdatedStamp"), null, false);
-                Debug.logInfo("===== Begin load specify components", module);
                 if (UtilValidate.isEmpty(this.component)) {
-                    for (GenericValue component : components) {
-                        loadComponents.add(component.getString("componentName"));
-                        //Debug.logInfo("- loaded default component : " + component.getString("componentName"), module);
+                    for (ComponentConfig config : allComponents) {
+                        loadComponents.add(config.getComponentName());
                     }
-                    Debug.logInfo("- Loaded components by default : " + components.size() + " components", module);
                     List<GenericValue> tenantComponents = baseDelegator.findByAnd("TenantComponent", UtilMisc.toMap("tenantId", delegator.getDelegatorTenantId()), UtilMisc.toList("sequenceNum"), false);
                     for (GenericValue tenantComponent : tenantComponents) {
                         loadComponents.add(tenantComponent.getString("componentName"));
-                        //Debug.logInfo("- loaded component by tenantId : " + tenantComponent.getString("tenantId") +", component : " + tenantComponent.getString("componentName"), module);
                     }
-                    Debug.logInfo("- Loaded components by tenantId : " + delegator.getDelegatorTenantId() + ", " + tenantComponents.size() + " components", module);
+                    Debug.logInfo("Loaded components by tenantId : " + delegator.getDelegatorTenantId() + ", " + tenantComponents.size() + " components", module);
                 } else {
                     List<GenericValue> tenantComponents = baseDelegator.findByAnd("TenantComponent", UtilMisc.toMap("tenantId", delegator.getDelegatorTenantId(), "componentName", this.component),
                             UtilMisc.toList("sequenceNum"), false);
                     for (GenericValue tenantComponent : tenantComponents) {
                         loadComponents.add(tenantComponent.getString("componentName"));
-                        //Debug.logInfo("- loaded component by tenantId : " + tenantComponent.getString("tenantId") +", component : " + tenantComponent.getString("componentName"), module);
                     }
-                    Debug.logInfo("- Loaded tenantId : " + delegator.getDelegatorTenantId() + " and component : " + this.component, module);
+                    Debug.logInfo("Loaded tenantId : " + delegator.getDelegatorTenantId() + " and component : " + this.component, module);
                 }
-                Debug.logInfo("===== Loaded : " + loadComponents.size() + " components", module);
+                Debug.logInfo("Loaded : " + loadComponents.size() + " components", module);
             } catch (GenericEntityException e) {
                 Debug.logError(e.getMessage(), module);
             }
@@ -577,9 +574,11 @@ public class EntityDataLoadContainer implements Container {
     /**
      * @see org.ofbiz.base.container.Container#stop()
      */
+    @Override
     public void stop() throws ContainerException {
     }
 
+    @Override
     public String getName() {
         return name;
     }

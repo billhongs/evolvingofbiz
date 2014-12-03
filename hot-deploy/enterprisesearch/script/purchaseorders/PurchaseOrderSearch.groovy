@@ -40,6 +40,7 @@ def getPurchaseOrderSearchFacets () {
     //Status Filter Query
     searchedStatusString = parameters.status;
     searchedStatus = searchedStatusString?.split(":");
+
     statusFilterQuery = "";
     if (searchedStatus){
         searchedStatus.each { searchedStatusId ->
@@ -70,14 +71,14 @@ def getPurchaseOrderSearchFacets () {
         } else if (parameters.maxDate) {
             daysFilterQuery = "orderDate:[* TO " + df.format(Timestamp.valueOf(parameters.maxDate)) + "]";
         }
-    } else if (parameters.days){
+    } else if (parameters.days) {
         if ("More".equals(parameters.days)) {
             daysFilterQuery = "orderDate:[* TO NOW-30DAY]";
         } else {
             daysFilterQuery = "orderDate:[NOW-" + parameters.days + "DAY TO *]"
         }
     }
-    
+
     // Status Facets
     facetStatus = [];
     
@@ -126,6 +127,10 @@ def getPurchaseOrderSearchFacets () {
         commonQuery.removeFacetQuery("statusId:" + status.statusId);
         if (statusCount > 0 || searchedStatus?.contains(status.statusId)) {
             statusInfo.statusId = status.statusId;
+            //TODO: This should be handleled client side.
+            if (searchedStatus && searchedStatus.contains(status.statusId)) {
+                statusInfo.isChecked = true;
+            }
             statusInfo.description = status.description;
             statusInfo.statusCount = statusCount;
     
@@ -211,6 +216,11 @@ def getPurchaseOrderSearchFacets () {
             daysUrlParam = daysParam;
             daysInfo.days = key;
             daysInfo.daysDescription = value;
+            selectedDays = parameters.days;
+            //TODO: We will be handling persistence of radio button on clint side.
+            if (selectedDays && selectedDays.equals(key)) {
+                daysInfo.isChecked = true;
+            }
             daysInfo.daysCount = daysCount;
             if (parameters.days){
                 if (!(parameters.days.equals(key))){

@@ -83,7 +83,7 @@ def getOrderSearchFacets () {
     //Channel Filter Query
     channelFilterQuery = "";
     channel = parameters.channel;
-    if (channel){
+    if (channel) {
         channelFilterQuery = "salesChannelEnumId:" + channel;
     }
 
@@ -161,6 +161,10 @@ def getOrderSearchFacets () {
             statusInfo.statusId = status.statusId;
             statusInfo.description = status.description;
             statusInfo.statusCount = statusCount;
+            //TODO: We will be handling persistence of checkboxes on clint side.
+            if (searchedStatus && searchedStatus.contains(status.statusId)) {
+                statusInfo.isChecked = true;
+            }
 
             if (searchedStatus){
                 urlStatus = [];
@@ -243,12 +247,17 @@ def getOrderSearchFacets () {
         if (channelCount > 0) {
             channelUrlParam = channelParam;
             channelInfo.channelId = channel.enumId;
+            //TODO: We will be handling persistence of radio button on clint side.
+            selectedChannel = parameters.channel;
+            if (selectedChannel && selectedChannel.equals(channel.enumId)) {
+                channelInfo.isChecked = true;
+            }
             channelInfo.description = channel.description;
             channelInfo.channelCount = channelCount;
             if (parameters.channel) {
                 if (!parameters.channel.equals(channel.enumId)){
                     channelUrlParam = channelUrlParam + channel.enumId;
-                } 
+                }
             } else {
                 channelUrlParam = channelUrlParam + channel.enumId;
             }
@@ -307,6 +316,12 @@ def getOrderSearchFacets () {
             daysInfo.days = key;
             daysInfo.daysDescription = value;
             daysInfo.daysCount = daysCount;
+
+            //TODO: We will be handling persistence of radio button on clint side.
+            selectedDays = parameters.days;
+            if (selectedDays && selectedDays.equals(key)) {
+                daysInfo.isChecked = true;
+            }
             if (parameters.days){
                 if (!(parameters.days.equals(key))){
                     daysUrlParam = daysUrlParam + key;

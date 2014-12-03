@@ -57,7 +57,19 @@
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
-
+    <request-map uri="getReturnFacets">
+        <security https="false" auth="false"/>
+        <event type="service" invoke="getReturnSearchFacets"/>
+        <response name="success" type="request" value="json"/>
+        <response name="error" type="request" value="json"/>
+    </request-map>
+    <request-map uri="findReturns">
+        <security https="false" auth="false"/>
+        <event type="service" invoke="getReturnSearchResults"/>
+        <response name="success" type="request" value="json"/>
+        <response name="error" type="request" value="json"/>
+    </request-map>
+    
     <!-- View Mappings -->
     <view-map name="main" type="screen" page="component://enterprisesearch/widget/EnterpriseSearchScreens.xml#main"/>
 </site-conf>

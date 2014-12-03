@@ -43,7 +43,7 @@ under the License.
         <attribute name="result" mode="OUT" type="Map" optional="false"/>
     </service>
     <service name="getReturnSearchResults" engine="groovy"
-            location="component://enterprisesearch/script/returns/ReturnSearch.groovy" invoke="getReturnSearchFacets" auth="false">
+            location="component://enterprisesearch/script/returns/ReturnSearch.groovy" invoke="getReturnSearchResults" auth="false">
         <description>Service will provide every required information for Search part of Find returns page.</description>
         <attribute name="keyword" mode="IN" type="String" optional="true"/>
         <attribute name="status" mode="IN" type="String" optional="true"/>

@@ -8,11 +8,13 @@ import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.party.party.PartyHelper;
+import org.ofbiz.service.ServiceUtil;
 import java.sql.Timestamp;
+import org.ofbiz.enterprisesearch.SearchHelper;
 
 
-def getPurchaseOrderSearchFacets () {
-    result = [];
+def getReturnSearchFacets () {
+    result = [:];
     keyword = parameters.keyword?.trim() ?: "";
     
     // Get server object
@@ -56,6 +58,7 @@ def getPurchaseOrderSearchFacets () {
     
     //Days Filter Query
     daysFilterQuery = "";
+    nowTimestamp = UtilDateTime.nowTimestamp();
     dayStart = UtilDateTime.getDayStart(nowTimestamp);
     if (parameters.minDate || parameters.maxDate) {
         // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
@@ -228,11 +231,12 @@ def getPurchaseOrderSearchFacets () {
     result.facetDays = facetDays;
     serviceResult = ServiceUtil.returnSuccess();
     serviceResult.put("result", result);
+    println "===============here is the result===========${result}";
     return serviceResult;
 }
 
-def getPurchaseOrderSearchFacets () {
-    result = [];
+def getReturnSearchResults () {
+    result = [:];
     keyword = parameters.keyword?.trim() ?: "";
     customer = parameters.customer?.trim() ?: "";
     viewSize = Integer.valueOf(parameters.viewSize ?: 20);
@@ -359,5 +363,6 @@ def getPurchaseOrderSearchFacets () {
     result.returnInfoList = returnInfoList;
     serviceResult = ServiceUtil.returnSuccess();
     serviceResult.put("result", result);
+    println "===============all returns===========${result}";
     return serviceResult;
 }

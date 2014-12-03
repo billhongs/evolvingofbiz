@@ -1,0 +1,75 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="panel-title">Search Results</span>
+  </div>
+  <div id="order-table" class="hidden-xs">   
+    <table class="table table-striped table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Date</th>
+          <th>Customer</th>
+          <th width="50px">PO id</th>
+          <th width="50px">Items</th>
+          <th width="70px">Amount</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <td data-ng-show="(searchResult.orderInfoList  | filter:keyword.search).length == 0" class="text-danger"><strong>No result found</strong>
+          </td>     
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr data-ng-repeat="order in searchResult.orderInfoList | filter:keyword.search" onClick="{window.location ='#/orderDetail'}" class="cursorPointer">
+          <td>
+            <span>{{order.orderId}}</span>
+            <span class="label label-default">{{order.statusDesc}}</span>
+            <span class="text-muted">via {{order.channel.description}}</span>
+          </td>
+          <td>{{order.orderDate}}</td>
+          <td>
+            {{order.customerName}}<br>
+            <span class="text-muted">{{order.emailAddress}}</span> 
+            <span class="glyphicon glyphicon-envelope "></span><br>
+            <span class="text-muted">{{order.phoneNumber}}</span>
+            <span class="glyphicon glyphicon-phone"></span>
+          </td>
+          <td></td>
+          <td>{{order.orderSize}}</td>
+          <td>${{order.grandTotal}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="order-table" class="visible-xs" >
+    <table class="table table-striped table-condensed table-hover">
+      <tfoot>
+        <tr>
+          <td data-ng-show="(searchResult.orderInfoList | filter:keyword.search).length == 0" class="text-danger"><strong>No result found</strong>
+          </td>     
+        </tr>
+      </tfoot>
+      <tbody>
+      <tr data-ng-repeat="order in searchResult.orderInfoList  | filter:keyword.search" onClick="{window.location ='#/orderDetail'}" class="cursorPointer">
+        <td>
+          <span id="forLandscape">
+            {{order.orderId}}
+            <span class="label label-default">{{order.statusDesc}}</span>
+          </span>
+          <span class="label label-default">{{order.orderId}}</span>
+          &nbsp;<span><span class="badge">{{order.orderSize}}</span> ${{order.grandTotal}}</span>
+          <span style="float:right;">{{order.orderDate}}</span>
+          <br>
+          {{order.customerName}}
+          <span class="text-muted" style="float:right;">{{order.phoneNumber}}
+          <span class="glyphicon glyphicon-phone"></span></span>
+          <br>
+          <span class="text-muted" style="float:right;">{{order.emailAddress}}
+          <span class="glyphicon glyphicon-envelope "></span></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

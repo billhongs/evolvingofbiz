@@ -1,0 +1,104 @@
+body {
+  font-size: 150%;
+}
+
+ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+li {
+  list-style: none;
+}
+
+.titlebar {
+  font-size: 16px;
+}
+
+.horizontalLine {
+  margin-bottom: 8px;
+  margin-top: 8px;
+  border-bottom: 1px solid #A2A2A7;
+}
+
+.icon-inline {
+  display: inline;
+}
+
+.glyphicon {
+  color: #0099FF;
+}
+
+.glyphicon-dashboard {
+  color: white;
+}
+
+.modal {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.modal-dialog {
+  padding-top: 10%;
+}
+
+.modal-content {
+  height: 100% !important;
+  overflow: visible;
+}
+
+.modal-body {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.set_content_margin {
+  margin-left: 10px;
+}
+
+.row .modal-body .set-default-space {
+  margin: 0;
+  padding: 0;
+}
+
+#frm_content {
+  display: none;
+}
+
+.glyphicon_set_margin {
+  margin-right: 12px;
+}
+
+.wish_list_padding {
+  margin: 5px;
+  padding: 5px;
+}
+
+#remove_edit {
+  cursor: pointer;
+}
+
+.add_phone_btn {
+  margin-top: -7px;
+}
+
+.inner_table {
+  border-top: none ! important;
+  margin: 0 ! important;
+  padding: 0 ! important;
+}
+
+.inner_table tr td {
+  margin: 0 ! important;
+  padding: 0 ! important;
+}
+
+#inner_table_background {
+  background-color: transparent !important;
+}
+
+.inner_panel_body {
+  margin-left: 0 ! important;
+  padding-left: 0 ! important;
+}
+  

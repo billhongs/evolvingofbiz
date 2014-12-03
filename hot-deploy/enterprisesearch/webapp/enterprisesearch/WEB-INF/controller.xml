@@ -22,37 +22,37 @@
     <!-- Request Mappings -->
     <request-map uri="main"><security https="true" auth="true"/><response name="success" type="view" value="main"/></request-map>
     <request-map uri="FindOrders">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="searchOrderByFilters"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
     <request-map uri="FindOrderFacets">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="getOrderSearchFacets"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
     <request-map uri="enterpriseSearch">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="getEnterpriseSearchResults"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
     <request-map uri="customerSearchResults">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="getCustomerSearchDetails"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
     <request-map uri="purchaseOrderFacets">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="getPurchaseOrderSearchFacets"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>
     </request-map>
     <request-map uri="purchaseOrderSearchResults">
-        <security https="true" auth="false"/>
+        <security https="false" auth="false"/>
         <event type="service" invoke="getPurchaseOrderSearchResults"/>
         <response name="success" type="request" value="json"/>
         <response name="error" type="request" value="json"/>

@@ -59,13 +59,15 @@ def getOrderSearchFacets () {
     commonQuery.setParam("q", "fullText:(" + keywordQueryString + ") AND orderTypeId:SALES_ORDER");
     commonQuery.setFacet(true);
 
+    //Filter Queries
+
     //Status Filter Query
     searchedStatusString = parameters.status;
     searchedStatus = searchedStatusString?.split(":");
     statusFilterQuery = "";
-    if (searchedStatus) {
+    if (searchedStatus){
         searchedStatus.each { searchedStatusId ->
-            if (searchedStatusId) {
+            if (searchedStatusId){
                 if (statusFilterQuery) {
                     statusFilterQuery = statusFilterQuery + " OR " + searchedStatusId;
                 } else {
@@ -81,8 +83,30 @@ def getOrderSearchFacets () {
     //Channel Filter Query
     channelFilterQuery = "";
     channel = parameters.channel;
-    if (channel) {
+    if (channel){
         channelFilterQuery = "salesChannelEnumId:" + channel;
+    }
+
+    //Days Filter Query
+    daysFilterQuery = "";
+    nowTimestamp = UtilDateTime.nowTimestamp();
+    dayStart = UtilDateTime.getDayStart(nowTimestamp);
+    if (parameters.minDate || parameters.maxDate) {
+        // Solr supports yyyy-MM-dd'T'HH:mm:ss.SSS'Z' date format.
+        df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
+        if (parameters.minDate && parameters.maxDate) {
+            daysFilterQuery = "orderDate:[" + df.format(Timestamp.valueOf(parameters.minDate)) + " TO " + df.format(Timestamp.valueOf(parameters.maxDate)) + "]";
+        } else if (parameters.minDate) {
+            daysFilterQuery = "orderDate:[" + df.format(Timestamp.valueOf(parameters.minDate)) + " TO *]";
+        } else if (parameters.maxDate) {
+            daysFilterQuery = "orderDate:[* TO " + df.format(Timestamp.valueOf(parameters.maxDate)) + "]";
+        }
+    } else if (parameters.days){
+        if ("More".equals(parameters.days)) {
+            daysFilterQuery = "orderDate:[* TO NOW-30DAY]";
+        } else {
+            daysFilterQuery = "orderDate:[NOW-" + parameters.days + "DAY TO *]"
+        }
     }
 
     // Status Facets
@@ -94,19 +118,36 @@ def getOrderSearchFacets () {
     allStatusIds.each { status ->
         commonQuery.addFacetQuery("statusId:" + status.statusId);
     }
-    if (channelFilterQuery) {
+    if (channelFilterQuery){
         commonQuery.addFilterQuery(channelFilterQuery);
     }
+    if (daysFilterQuery){
+        commonQuery.addFilterQuery(daysFilterQuery);
+    }
+
     // Get status facet results.
     qryReq = new QueryRequest(commonQuery, SolrRequest.METHOD.POST);
     rsp = qryReq.process(server);
 
-    facetQuery = rsp.getFacetQuery();
+    Map<String, Integer> facetQuery = rsp.getFacetQuery();
     commonParam = "";
     if (parameters.keyword) {
         commonParam = "keyword=" + keyword;
     }
-    if (commonParam) {
+
+    dateParam = "";
+    if (parameters.minDate || parameters.maxDate) {
+        if (parameters.minDate && parameters.maxDate) {
+            dateParam = "&minDate=" + parameters.minDate + "&maxDate=" + parameters.maxDate;
+        } else if (parameters.minDate) {
+            dateParam = "&minDate=" + parameters.minDate;
+        } else if (parameters.maxDate) {
+            dateParam = "&maxDate=" + parameters.maxDate;
+        }
+    } else if (parameters.days) {
+        dateParam = "&days=" + parameters.days;
+    }
+    if (commonParam){
         statusUrlParam = commonParam + "&status=";
     } else {
         statusUrlParam = "status=";
@@ -121,7 +162,7 @@ def getOrderSearchFacets () {
             statusInfo.description = status.description;
             statusInfo.statusCount = statusCount;
 
-            if (searchedStatus) {
+            if (searchedStatus){
                 urlStatus = [];
                 searchedStatus.each { searchedStatusId ->
                     if (searchedStatusId){
@@ -140,50 +181,56 @@ def getOrderSearchFacets () {
                 statusParam = statusParam + status.statusId;
             }
             statusUrl = statusParam;
-            if (channel) {
+            if (channel){
                 statusUrl = statusUrl + "&channel=" + channel;
+            }
+            if (dateParam) {
+                statusUrl = statusUrl + dateParam;
             }
             statusInfo.urlParam = statusUrl;
             facetStatus.add(statusInfo);
         }
     }
-    if (channel) {
+    if (dateParam) {
+        statusUrlParam = statusUrlParam + dateParam;
+    }
+    if (channel){
         statusUrlParam = statusUrlParam + "&channel=" + channel;
     }
     result.clearStatusUrl = statusUrlParam;
-    
-    result.facetStatus = facetStatus;
+
+    result.facetStatuses = facetStatus;
 
     //Channel Facets
     facetChannels = [];
-    
+
     //Get the channels
     allChannels = delegator.findByAnd("Enumeration", [enumTypeId : "ORDER_SALES_CHANNEL"], ["sequenceId"]);
-    
+
     allChannels.each { channel ->
         commonQuery.addFacetQuery("salesChannelEnumId:" + channel.enumId);
     }
     if (statusFilterQuery) {
         commonQuery.addFilterQuery(statusFilterQuery);
     }
-    if (channelFilterQuery) {
+    if (channelFilterQuery){
         commonQuery.removeFilterQuery(channelFilterQuery);
     }
-    
-    //Get channel facet results.
+
+    // Get channel facet results.
     qryReq = new QueryRequest(commonQuery, SolrRequest.METHOD.POST);
     rsp = qryReq.process(server);
     facetQuery = rsp.getFacetQuery();
-    
+
     defaultStatusParam = "";
     if (searchedStatus) {
         searchedStatus.each { searchedStatusId ->
-            if (searchedStatusId) {
+            if (searchedStatusId){
                 defaultStatusParam = defaultStatusParam + ":" + searchedStatusId;
             }
         }
     }
-    
+
     if (commonParam) {
         channelParam = commonParam + "&channel=";
     } else {
@@ -199,22 +246,44 @@ def getOrderSearchFacets () {
             channelInfo.description = channel.description;
             channelInfo.channelCount = channelCount;
             if (parameters.channel) {
-                if (!parameters.channel.equals(channel.enumId)) {
+                if (!parameters.channel.equals(channel.enumId)){
                     channelUrlParam = channelUrlParam + channel.enumId;
-                }
+                } 
             } else {
                 channelUrlParam = channelUrlParam + channel.enumId;
             }
             if(defaultStatusParam) {
                 channelUrlParam = channelUrlParam + "&status=" + defaultStatusParam;
             }
+            if (dateParam) {
+                channelUrlParam = channelUrlParam + dateParam;
+            }
             channelInfo.urlParam = channelUrlParam;
             facetChannels.add(channelInfo);
         }
     }
     result.facetChannels = facetChannels;
-    
-    if (channelFilterQuery) {
+
+    //Date facets
+
+    facetDays = [];
+    noOfDays = ["0": "Today", "7": "Last 7 days", "30": "Last 30 days", "More": "More than 30 days"];
+    noOfDaysQuery = [:];
+
+    noOfDays.each { key, value ->
+        if ("More".equals(key)) {
+            noOfDaysQuery.put(key, "orderDate:[* TO NOW-30DAY]");
+        } else {
+            noOfDaysQuery.put(key, "orderDate:[NOW-" + key + "DAY TO *]");
+        }
+        commonQuery.addFacetQuery(noOfDaysQuery.get(key));
+    }
+
+    // Get date facet results.
+    if (daysFilterQuery){
+        commonQuery.removeFilterQuery(daysFilterQuery);
+    }
+    if (channelFilterQuery){
         commonQuery.addFilterQuery(channelFilterQuery);
     }
     qryReq = new QueryRequest(commonQuery, SolrRequest.METHOD.POST);
@@ -222,18 +291,50 @@ def getOrderSearchFacets () {
 
     facetQuery = rsp.getFacetQuery();
     facetDays = [];
+
+    if (commonParam){
+        daysParam = commonParam + "&days=";
+    } else {
+        daysParam = "days=";
+    }
+
+    noOfDays.each { key, value ->
+        daysInfo = [:];
+        daysCount = facetQuery.get(noOfDaysQuery.get(key));
+        commonQuery.removeFacetQuery(noOfDaysQuery.get(key));
+        if (daysCount > 0) {
+            daysUrlParam = daysParam;
+            daysInfo.days = key;
+            daysInfo.daysDescription = value;
+            daysInfo.daysCount = daysCount;
+            if (parameters.days){
+                if (!(parameters.days.equals(key))){
+                    daysUrlParam = daysUrlParam + key;
+                } 
+            } else {
+                daysUrlParam = daysUrlParam + key;
+            }
+            if(defaultStatusParam) {
+                daysUrlParam = daysUrlParam + "&status=" + defaultStatusParam;
+            }
+            if (channel){
+                daysUrlParam = daysUrlParam + "&channel=" + channel;
+            }
+            daysInfo.urlParam = daysUrlParam;
+            facetDays.add(daysInfo);
+        }
+    }
+    result.facetDays = facetDays;
     serviceResult = ServiceUtil.returnSuccess();
     serviceResult.put("result", result);
     return serviceResult;
 }
 
-/*---------------------------search orders by filters------------------------------*/
 
 def searchOrderByFilters () {
     userLogin = delegator.findOne("UserLogin", [userLoginId : "system"], false);
 
     result = [:];
-
     int scale = UtilNumber.getBigDecimalScale("order.decimals");
     int rounding = UtilNumber.getBigDecimalRoundingMode("order.rounding");
     BigDecimal ZERO = (BigDecimal.ZERO).setScale(scale, rounding);
@@ -243,6 +344,9 @@ def searchOrderByFilters () {
     viewSize = Integer.valueOf(parameters.viewSize ?: 20);
     viewIndex = Integer.valueOf(parameters.viewIndex ?: 0);
     channel = parameters.channel;
+    minDate = parameters.minDate;
+    maxDate = parameters.maxDate;
+    days = parameters.days;
     status = parameters.status;
 
     //Get server object
@@ -250,7 +354,7 @@ def searchOrderByFilters () {
 
     // filtered queries on facets.
     query = new SolrQuery();
-    keywordString = keyword.split(" ");
+    keywordString = keyword.split(" ")
     keywordQueryString = "";
     keywordString.each { token->
         token = ClientUtils.escapeQueryChars(token);
@@ -262,14 +366,14 @@ def searchOrderByFilters () {
     }
     query.setParam("q", "fullText:(" + keywordQueryString + ") AND orderTypeId:SALES_ORDER");
     query.setParam("sort", "orderDate desc");
-    
+
     completeUrlParam = "";
-    if (parameters.keyword) {
+    if(parameters.keyword) {
         completeUrlParam = "keyword=" + keyword;
     }
-    if (status) {
+    if(status) {
         queryStringStatusId = "";
-        if (completeUrlParam) {
+        if(completeUrlParam){
             completeUrlParam = completeUrlParam + "&status=";
         } else {
             completeUrlParam = "status=";
@@ -277,8 +381,8 @@ def searchOrderByFilters () {
         statusString = status;
         statusIds = statusString.split(":");
         statusIds.each { statusId ->
-            if (statusId) {
-                if (queryStringStatusId) {
+            if(statusId) {
+                if(queryStringStatusId) {
                     queryStringStatusId = queryStringStatusId + " OR " + statusId;
                 } else {
                     queryStringStatusId = statusId;
@@ -286,45 +390,54 @@ def searchOrderByFilters () {
                 completeUrlParam = completeUrlParam + ":" + statusId;
             }
         }
-        if (queryStringStatusId) {
+        if (queryStringStatusId){
             query.addFilterQuery("statusId:(" + queryStringStatusId + ")");
         }
     }
-    
-    if (channel) {
-        if (completeUrlParam) {
+
+    if(channel){
+        if(completeUrlParam){
             completeUrlParam = completeUrlParam + "&channel=" + channel;
         } else {
             completeUrlParam = "channel=" + channel;
         }
         query.addFilterQuery("salesChannelEnumId:" + channel);
     }
-    
+
     completeUrlParamForPagination = completeUrlParam;
-    
+
+    if (minDate || maxDate) {
+        df = UtilDateTime.toDateTimeFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getDefault(), locale);
+        if(minDate && maxDate) {
+            dayQuery = "orderDate:[" + df.format(Timestamp.valueOf(minDate)) + " TO " + df.format(Timestamp.valueOf(maxDate)) + "]";
+            completeUrlParamForPagination = completeUrlParamForPagination + "&minDate=" + minDate + "&maxDate=" + maxDate;
+        } else if (minDate) {
+            dayQuery = "orderDate:[" + df.format(Timestamp.valueOf(minDate)) + " TO *]";
+            completeUrlParamForPagination = completeUrlParamForPagination + "&minDate=" + minDate;
+        } else if(maxDate) {
+            dayQuery = "orderDate:[* TO " + df.format(Timestamp.valueOf(maxDate)) + "]";
+            completeUrlParamForPagination = completeUrlParamForPagination + "&maxDate=" + maxDate;
+        }
+        query.addFilterQuery(dayQuery);
+    } else if(days){
+        if("More".equals(days)) {
+            dayQuery = "orderDate:[* TO NOW-30DAY]";
+        } else {
+            dayQuery = "orderDate:[NOW-" + days + "DAY TO *]";
+        }
+        query.addFilterQuery(dayQuery);
+        completeUrlParamForPagination = completeUrlParamForPagination + "&days=" + days;
+    }
+
     qryReq = new QueryRequest(query, SolrRequest.METHOD.POST);
     rsp = qryReq.process(server);
-    
+
     listSize = Integer.valueOf(rsp.getResults().getNumFound().toString());
-    
-    Map<String, Object> result = FastMap.newInstance();
-    if (UtilValidate.isNotEmpty(listSize)) {
-        Integer lowIndex = (viewIndex * viewSize) + 1;
-        Integer highIndex = (viewIndex + 1) * viewSize;
-        if (highIndex > listSize) {
-            highIndex = listSize;
-        }
-        Integer viewIndexLast = (listSize % viewSize) != 0 ? (listSize / viewSize + 1) : (listSize / viewSize);
-        result.put("lowIndex", lowIndex);
-        result.put("highIndex", highIndex);
-        result.put("viewIndexLast", viewIndexLast);
-    }
-    paginationValues = result;
-    
+    paginationValues = SearchHelper.getPaginationValues(viewSize, viewIndex, listSize);
     query.setRows(viewSize);
     query.setStart(paginationValues.get('lowIndex') - 1);
     qryReq = new QueryRequest(query, SolrRequest.METHOD.POST);
-    
+
     rsp = qryReq.process(server);
     docs = rsp.getResults();
     orderIds = [];
@@ -335,24 +448,29 @@ def searchOrderByFilters () {
     orderInfoList = [];
     orderList.each { order->
         orderInfo = [:];
+        orderItemBilling = EntityUtil.getFirst(delegator.findByAnd("OrderItem", [orderId : order.orderId], null, false));
+        orderInfo.POid = orderItemBilling.correspondingPoId;
         orderInfo.orderId = order.orderId;
-        String orderDate = order.orderDate;
+        orderInfo.orderDate = UtilDateTime.toDateString(order.orderDate);
         orderInfo.grandTotal = order.grandTotal;
-        orderInfo.orderDate = orderDate;
         orh = OrderReadHelper.getHelper(order);
+        orderInfo.uom = orh.getCurrency();
         partyId = orh.getPlacingParty()?.partyId;
         orderInfo.partyId = partyId;
-        partyEmailResult = dispatcher.runSync("getPartyEmail", [partyId: partyId, userLogin:userLogin]);
+        partyEmailResult = dispatcher.runSync("getPartyEmail", [partyId: partyId, userLogin: userLogin]);
         orderInfo.emailAddress = partyEmailResult?.emailAddress;
+        partyTelephoneResult = dispatcher.runSync("getPartyTelephone", [partyId: partyId, userLogin:userLogin]);
+        String phoneNumber = partyTelephoneResult?.countryCode+" "+partyTelephoneResult?.areaCode+" "+partyTelephoneResult?.contactNumber;
+        orderInfo.phoneNumber = phoneNumber;
         channel = order.getRelatedOne("SalesChannelEnumeration");
         orderInfo.channel = channel;
         partyNameResult = dispatcher.runSync("getPartyNameForDate", [partyId: partyId, compareDate: order.orderDate, userLogin: userLogin]);
         orderInfo.customerName = partyNameResult?.fullName;
         orderItems = orh.getOrderItems();
-           BigDecimal totalItems = ZERO;
-           orderItems.each { orderItem ->
-               totalItems = totalItems.add(OrderReadHelper.getOrderItemQuantity(orderItem)).setScale(scale, rounding);
-           }
+        BigDecimal totalItems = ZERO;
+        orderItems.each { orderItem ->
+            totalItems = totalItems.add(OrderReadHelper.getOrderItemQuantity(orderItem)).setScale(scale, rounding);
+        }
         orderInfo.orderSize = totalItems.setScale(scale, rounding);
         statusItem = order.getRelatedOne("StatusItem");
         orderInfo.statusId = statusItem.statusId;
@@ -366,7 +484,6 @@ def searchOrderByFilters () {
     result.lowIndex = paginationValues.get("lowIndex");
     result.listSize = listSize;
     result.orderList = orderList;
-	println "=====@@@@@@@@@===@@@@@@===orderList========${orderList}===";
     result.orderInfoList = orderInfoList;
     serviceResult = ServiceUtil.returnSuccess();
     serviceResult.put("result", result);

@@ -5,7 +5,6 @@ var purchaseOrder = angular.module('purchaseOrder.controllers', []);
     $scope.filterByStatus = function(urlParam) {
         searchFacet = PurchaseOrderService.getPurchaseOrderFacetsByStatus(urlParam);
         searchResult = PurchaseOrderService.getPurchaseOrderResultsByStatus(urlParam);
-        document.getElementById('abc').checked = true;
         searchFacet.then(
             function(response) {
                 console.log(response.data.result);

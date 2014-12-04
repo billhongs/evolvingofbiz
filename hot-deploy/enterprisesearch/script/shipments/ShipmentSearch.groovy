@@ -3,11 +3,13 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.ofbiz.enterprisesearch.SearchHelper;
 import org.ofbiz.entity.condition.EntityConditionBuilder;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.service.ServiceUtil;
 
 def getShipmentSearchFacets () {
-    result = [];
+    result = [:];
     keyword = parameters.keyword?.trim() ?: "";
     keywordString = keyword.split(" ")
     keywordQueryString = "";
@@ -112,9 +114,13 @@ def getShipmentSearchFacets () {
         commonQuery.removeFacetQuery("statusId:(" + status.statusId+")");
         if (statusCount > 0 || searchedStatus?.contains(status.statusId)) {
             statusInfo.statusId = status.statusId;
+            //TODO: This should be handleled client side.
+            if (searchedStatus && searchedStatus.contains(status.statusId)) {
+                statusInfo.isChecked = true;
+            }
             statusInfo.description = status.description;
             statusInfo.statusCount = statusCount;
-            if (searchedStatus){
+            if (searchedStatus) {
                 urlStatus = [];
                 searchedStatus.each { searchedStatusId ->
                     if (searchedStatusId){
@@ -193,9 +199,14 @@ def getShipmentSearchFacets () {
         if (shipmentTypeCount > 0) {
             shipmentTypeUrlParam = typeUrlStatusParam;
             shipmentTypeInfo.shipmentTypeId = shipmentType.shipmentTypeId;
+            //TODO: This should be handleled client side.
+            selectedShipmentType = parameters.shipmentTypeId;
+            if (selectedShipmentType && selectedShipmentType.equals(shipmentType.shipmentTypeId)) {
+                shipmentTypeInfo.isChecked = true;
+            }
             shipmentTypeInfo.description = shipmentType.description;
             shipmentTypeInfo.shipmentTypeCount = shipmentTypeCount;
-    
+
             if (parameters.shipmentTypeId) {
                 if (!parameters.shipmentTypeId.equals(shipmentType.shipmentTypeId)) {
                     shipmentTypeUrlParam = shipmentTypeUrlParam + "&shipmentTypeId=" + shipmentType.shipmentTypeId;
@@ -218,7 +229,8 @@ def getShipmentSearchFacets () {
 }
 
 def getShipmentSearchResults () {
-    result = [];
+    result = [:];
+    userLogin = delegator.findOne("UserLogin", [userLoginId : "system"], false);
     
     keyword = parameters.keyword?.trim() ?: "";
     status = parameters.status;

@@ -10,15 +10,14 @@ import org.apache.solr.common.SolrDocument;
 import org.noggit.CharArr;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.content.search.DocumentIndexer;
+import org.ofbiz.enterprisesearch.SearchHelper;
+import org.ofbiz.service.ServiceUtil;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.util.ClientUtils;
 
-import com.hotwaxmedia.easyerpadmin.StoreWorker;
-
-
 def getProductSearchFacets () {
-    result = [];
+    result = [:];
     HttpSolrServer server = new HttpSolrServer(DocumentIndexer.getSolrHost(delegator, "enterpriseSearch"));
     SolrQuery query = new SolrQuery();
     facetCategories = [];
@@ -110,7 +109,7 @@ def getProductSearchFacets () {
         }
     }
     result.clearCatUrl = urlParam + (parameters.price ? "&price=" + parameters.price : "");
-    
+
     //price facets
     query.clear();
     query.setParam("q", "*:*");
@@ -193,7 +192,7 @@ def getProductSearchFacets () {
 }
 
 def getProductSearchResults () {
-    result = [];
+    result = [:];
     HttpSolrServer server = new HttpSolrServer(DocumentIndexer.getSolrHost(delegator, "enterpriseSearch"));
     SolrQuery query = new SolrQuery();
     

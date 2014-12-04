@@ -16,7 +16,7 @@ import org.ofbiz.enterprisesearch.SearchHelper;
 def getReturnSearchFacets () {
     result = [:];
     keyword = parameters.keyword?.trim() ?: "";
-    
+
     // Get server object
     server = new HttpSolrServer(SearchHelper.getSolrHost(delegator, "enterpriseSearch"));
     
@@ -126,6 +126,10 @@ def getReturnSearchFacets () {
         commonQuery.removeFacetQuery("statusId:" + status.statusId);
         if (statusCount > 0 || searchedStatus?.contains(status.statusId)) {
             statusInfo.statusId = status.statusId;
+            //TODO: This should be handleled client side.
+            if (searchedStatus && searchedStatus.contains(status.statusId)) {
+                statusInfo.isChecked = true;
+            }
             statusInfo.description = status.description;
             statusInfo.statusCount = statusCount;
     
@@ -221,6 +225,11 @@ def getReturnSearchFacets () {
             }
             if(defaultStatusParam) {
                 daysUrlParam = daysUrlParam + "&status=" + defaultStatusParam;
+            }
+          //TODO: We will be handling persistence of radio button on clint side.
+            selectedDays = parameters.days;
+            if (selectedDays && selectedDays.equals(key)) {
+                daysInfo.isChecked = true;
             }
             daysInfo.urlParam = daysUrlParam;
             facetDays.add(daysInfo);

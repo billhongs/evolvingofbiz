@@ -246,6 +246,7 @@ def getReturnSearchFacets () {
 
 def getReturnSearchResults () {
     result = [:];
+    userLogin = delegator.findOne("UserLogin", [userLoginId : "system"], false);
     keyword = parameters.keyword?.trim() ?: "";
     customer = parameters.customer?.trim() ?: "";
     viewSize = Integer.valueOf(parameters.viewSize ?: 20);
@@ -352,7 +353,7 @@ def getReturnSearchResults () {
         if (returnItem) {
             returnInfo.orderId = returnItem.getString("orderId");
         }
-        returnInfo.returnDate = returnHeader.entryDate;
+        returnInfo.returnDate = UtilDateTime.toDateString(returnHeader.entryDate);
         returnInfo.partyId = partyId;
         returnInfo.customerName = PartyHelper.getPartyName(delegator, partyId, false);
         partyEmailResult = dispatcher.runSync("getPartyEmail", [partyId: partyId, userLogin: userLogin]);

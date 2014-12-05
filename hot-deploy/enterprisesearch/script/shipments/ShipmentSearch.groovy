@@ -354,8 +354,10 @@ def getShipmentSearchResults () {
 
             if ("SALES_SHIPMENT".equals(shipmentType.shipmentTypeId) && shipment.partyIdTo) {
                 partyName = PartyHelper.getPartyName(delegator, shipment.partyIdTo, false);
+                shipmentMap.put("partyName", partyName);
             } else if ("PURCHASE_SHIPMENT".equals(shipmentType.shipmentTypeId) && ) {
                 partyName = PartyHelper.getPartyName(delegator, shipment.partyIdFrom, false);
+                shipmentMap.put("partyName", partyName);
             }
         }
         filteredShipments.add(shipmentMap);

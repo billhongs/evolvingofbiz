@@ -29,12 +29,12 @@ def getShipmentSearchFacets () {
     //Get the shipment status list
     exprBldr = new EntityConditionBuilder();
     shipmentStatusTypes = [];
-    if (security.hasEntityPermission("SALES_SHIPMENT", "_ADMIN", session)) {
+    //if (security.hasEntityPermission("SALES_SHIPMENT", "_ADMIN", session)) {
         shipmentStatusTypes.add("SHIPMENT_STATUS");
-    }
-    if (security.hasEntityPermission("RECEIVING", "_ADMIN", session)) {
+    //}
+   // if (security.hasEntityPermission("RECEIVING", "_ADMIN", session)) {
         shipmentStatusTypes.add("PURCH_SHIP_STATUS");
-    }
+    //}
     shipmentStatusItems = delegator.findList("StatusItem", exprBldr.IN(statusTypeId: shipmentStatusTypes), null, ["sequenceId", "description"], null, false);
     
     commonQuery.setParam("q", "fullText:(" + keywordQueryString + ") AND docType:SHIPMENT");
@@ -149,9 +149,9 @@ def getShipmentSearchFacets () {
     //Shipment type Filter Query
     exprBldr = new EntityConditionBuilder();
     shipmentTypeIds = [];
-    if (security.hasEntityPermission("SALES_SHIPMENT", "_ADMIN", session)) {
+   // if (security.hasEntityPermission("SALES_SHIPMENT", "_ADMIN", session)) {
         shipmentTypeIds.add("SALES_SHIPMENT");
-    }
+    //}
     if (security.hasEntityPermission("RECEIVING", "_ADMIN", session)) {
         shipmentTypeIds.add("PURCHASE_SHIPMENT");
         shipmentTypeIds.add("SALES_RETURN");
@@ -339,13 +339,24 @@ def getShipmentSearchResults () {
         shipmentType = shipment.getRelatedOneCache("ShipmentType");
         shipmentMap.put("shipmentType", shipmentType);
         if ("SALES_RETURN".equals(shipment.shipmentTypeId)) {
+            partyName = PartyHelper.getPartyName(delegator, shipment.partyIdFrom, false);
+            shipmentMap.put("partyName", partyName);
             returnHeader = delegator.findOne("ReturnHeader", ["returnId" : shipment.primaryReturnId], false);
+            shipmentMap.put("returnId", shipment.primaryReturnId);
             returnStatusItem = delegator.findOne("StatusItem", ["statusId" : returnHeader.statusId], true);
             shipmentMap.put("returnStatusItem", returnStatusItem);
+            
         } else {
+            shipmentMap.put("orderId", shipment.primaryOrderId);
             orderHeader = delegator.findOne("OrderHeader", ["orderId" : shipment.primaryOrderId], false);
             orderStatusItem = delegator.findOne("StatusItem", ["statusId" : orderHeader.statusId], true);
             shipmentMap.put("orderStatusItem", orderStatusItem);
+
+            if ("SALES_SHIPMENT".equals(shipmentType.shipmentTypeId) && shipment.partyIdTo) {
+                partyName = PartyHelper.getPartyName(delegator, shipment.partyIdTo, false);
+            } else if ("PURCHASE_SHIPMENT".equals(shipmentType.shipmentTypeId) && ) {
+                partyName = PartyHelper.getPartyName(delegator, shipment.partyIdFrom, false);
+            }
         }
         filteredShipments.add(shipmentMap);
     }

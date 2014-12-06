@@ -39,6 +39,12 @@ purchaseOrderServices.service("PurchaseOrderService", ['$http', 'getPostRequestP
         return getPostRequestPromise.getPromise(url, parameters);
     };
     
+    this.getAllReturns = function() {
+        var url= "http://localhost:8080/enterprisesearch/control/findReturns",
+        parameters = {};
+        return getPostRequestPromise.getPromise(url, parameters);
+    }
+    
     this.getPurchaseOrderResults = function() {
         var url= "http://localhost:8080/enterprisesearch/control/purchaseOrderSearchResults",
         parameters = {};

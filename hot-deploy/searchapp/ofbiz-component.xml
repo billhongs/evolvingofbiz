@@ -31,9 +31,4 @@
     <test-suite loader="main" location="testdef/SearchAppTests.xml"/>
 
     <!-- web applications; will be mounted when using the embedded container -->
-    <webapp name="searchapp"
-        title="SearchApp"
-        server="default-server"
-        location="webapp/searchapp"
-        mount-point="/searchapp"/>
 </ofbiz-component>

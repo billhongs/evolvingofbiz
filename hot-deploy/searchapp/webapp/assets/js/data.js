@@ -3,16 +3,28 @@ var purchaseOrder=angular.module('purchaseOrder',['ngRoute']);
 purchaseOrder.config(function($routeProvider) {
   $routeProvider
   // route for the home page
-  .when ('/', {
-        templateUrl: 'pages/table.html'
+ 
+  .when ('/PurchaseOrder', {
+        templateUrl: 'pages/PO_Home.html',
+        controller: 'purchaseOrderController'
+       
   })
   .when ('/table/:param', {
-        templateUrl: 'pages/table.html'
+        templateUrl: 'pages/PO_Home.html',
+        controller: 'purchaseOrderController'
+  })
+  .when ('/orderDetail', {
+        templateUrl: 'pages/PO_Detail.html',
+        controller: 'orderDetailController'
+  })
+  .otherwise({
+    redirectTo: '/PurchaseOrder'
   });
 });
 
 // create the controller and inject Angular's $scope
 purchaseOrder.controller('purchaseOrderController', function($scope, $routeParams) {
+
   $scope.orders = [
     {id: 'PO20671', label: 'label-success', status: 'Completed', date: 'Sept, 29 2014', name: 'TROPICAL SUN INC.', item: '1', price: '15.44'},
     {id: 'PO20672', label: 'label-info', status: 'Approved', date: 'Sept, 27 2014', name: 'FORUM NOVELTIES CO.', item: '9', price: '115.82'}, 
@@ -66,8 +78,6 @@ purchaseOrder.controller('orderDetailController', function ($scope) {
  
   $scope.product_Gross = [{tax: '$0.00', subtotal: '$48.75'}];
 
-}) ;
-
 $(document).on("mousemove", "[data-toggle='popover']", function () {
  $("[data-toggle='popover']").popover();
 });
@@ -87,5 +97,9 @@ $('.popper').popover({
     return $(this).next('.popper-content').html();
   }
 });
+
+}) ;
+
+
 
 

@@ -207,12 +207,8 @@ label.btn-block {
 .navbar .dropdown-arrow {border-color: transparent transparent #34495e transparent;}
 .navbar-brand {float: none; padding-left: 5px; font-size: 18px;}
 .navbar-header .btn-group > .btn:first-child {margin-left: 5px; border-radius:22px;}
-/*.navbar .dropdown-menu li>a{background-color: #34495e; color: #fff;}*/
+.navbar .dropdown-menu li>a{background-color: #34495e; color: #fff;}
 .navbar .dropdown-menu li> a:hover {background-color: #1abc9c;}
 .navbar-nav li .dropdown {margin-top: 10px; padding-right: 5px; padding-left: 5px;}
 .navbar-nav li .dropdown .btn-link {color: #fff;}
 .navbar-nav li .dropdown .btn-link:hover {color: #1abc9c;}
-
-.enterprise-search .doFocus {
-background-color: #f0f0f4;
-}

@@ -1,11 +1,73 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Search Application</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    </head>
-    <body>
-        <h1>Now you can proceed further.</h1>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>HWM Enterprise Search</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/custom-style.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/datepicker.min.css" rel="stylesheet">
+  </head>
+  <body data-ng-app="enterpriseSearch">
+   <div ng-controller="enterpriseSearchController">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <form class="navbar-form" role="search">
+        <div class="row">
+          <div class="col-md-7 col-md-offset-3 ">
+           <div class="form-group">
+             <div class="input-group">
+               <div class="input-group-btn">
+                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-th-list"><span class="caret" style="margin-top:-10px; margin-left:4px;"></span></span></button>
+                 <ul class="dropdown-menu" role="menu">
+                   <li><a href="#">Action</a></li>
+                   <li><a href="#">Another action</a></li>
+                   <li><a href="#">Something else here</a></li>
+                 </ul>
+               </div><!-- /btn-group -->
+               <input type="text" ng-class="loading" name="keyword" ng-model="keyword" placeholder="Search" ng-keyup="startMove($event)" autocomplete="off" class="form-control" size="50">
+             </div>
+           </div>
+           <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button> 
+           <div class="dropdown" ng-class="autoStatus" ng-show="result_list" ignore-mousedown-inside="div.dropdown">
+             <ul class="dropdown-menu"">
+               <li ng-repeat="result in result_list">
+                 <div class="row">
+                   <div class="col-lg-2 title" style="font-size: 18px;"><span class="{{result.app}}-facet pull-right">{{result.title}}</span></div>
+                   <div class="col-lg-10">
+                     <ul class="list-unstyled">
+                       <li ng-repeat="item in result.items" ng-mouseover="startOver(item.item_number)">
+                         <a class="enterprise-search" href="" id="">
+                           <div class="app-results" ng-class="item.addFocus"  style="padding-top: 5px;
+                                padding-bottom: 5px;
+                                border-left: 1px solid #428bca !important;
+                                padding-left: 5px;">
+                             <strong>{{item.title}}</strong>
+                           </div>
+                         </a>
+                       </li>
+                     </ul>
+                   </div>
+                 </li>
+                 </div>
+               </ul>
+             </div>
+             </div>
+             </div>
+           </form>
+        </nav>
+     </div>
+
+    <!-- <div ng-view></div> -->
+    <script src="assets/js/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/js/angular.min.js" type="text/javascript"></script>
+    <script src="assets/js/angular-route.js"></script>
+    <script src="assets/js/bootstrap-datepicker.js"></script>
+    <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/js/enterpriseSearchDirectives.js" type="text/javascript"></script>
+    <script src="assets/js/enterpriseSearchControllers.js" type="text/javascript"></script>
+    <script src="assets/js/enterpriseSearchServices.js" type="text/javascript"></script>
+    <script src="assets/js/enterpriseSearchRoute.js" type="text/javascript"></script>
+  </body>
 </html>

@@ -33,7 +33,6 @@ import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilNumber;
-import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntityException;
@@ -44,6 +43,7 @@ import org.ofbiz.entity.condition.EntityExpr;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityQuery;
 import org.ofbiz.entity.util.EntityUtil;
+import org.ofbiz.entity.util.EntityUtilProperties;
 
 /**
  * InvoiceWorker - Worker methods of invoices
@@ -296,6 +296,7 @@ public class InvoiceWorker {
         if (UtilValidate.isEmpty(locations))    {
             // if no locations found get it from the PartyAndContactMech using the from and to party on the invoice
             String destinationPartyId = null;
+            Timestamp now = UtilDateTime.nowTimestamp();
             if (invoice.getString("invoiceTypeId").equals("SALES_INVOICE"))
                 destinationPartyId = invoice.getString("partyId");
             if (invoice.getString("invoiceTypeId").equals("PURCHASE_INVOICE"))
@@ -303,8 +304,8 @@ public class InvoiceWorker {
             try {
                 locations = EntityQuery.use(delegator).from("PartyContactWithPurpose")
                         .where("partyId", destinationPartyId, "contactMechPurposeTypeId", contactMechPurposeTypeId).queryList();
-                locations = EntityUtil.filterByDate(locations, null, "contactFromDate", "contactThruDate", true);
-                locations = EntityUtil.filterByDate(locations, null, "purposeFromDate", "purposeThruDate", true);
+                locations = EntityUtil.filterByDate(locations, now, "contactFromDate", "contactThruDate", true);
+                locations = EntityUtil.filterByDate(locations, now, "purposeFromDate", "purposeThruDate", true);
             } catch (GenericEntityException e) {
                 Debug.logError("Trouble getting contact party purpose list", module);
             }
@@ -313,8 +314,8 @@ public class InvoiceWorker {
                 try {
                     locations = EntityQuery.use(delegator).from("PartyContactWithPurpose")
                             .where("partyId", destinationPartyId, "contactMechPurposeTypeId", "GENERAL_LOCATION").queryList();
-                    locations = EntityUtil.filterByDate(locations, null, "contactFromDate", "contactThruDate", true);
-                    locations = EntityUtil.filterByDate(locations, null, "purposeFromDate", "purposeThruDate", true);
+                    locations = EntityUtil.filterByDate(locations, now, "contactFromDate", "contactThruDate", true);
+                    locations = EntityUtil.filterByDate(locations, now, "purposeFromDate", "purposeThruDate", true);
                 } catch (GenericEntityException e) {
                     Debug.logError("Trouble getting contact party purpose list", module);
                 }
@@ -505,7 +506,7 @@ public class InvoiceWorker {
             if (UtilValidate.isNotEmpty(party) && party.getString("baseCurrencyUomId") != null) {
                 otherCurrencyUomId = party.getString("baseCurrencyUomId");
             } else {
-                otherCurrencyUomId = UtilProperties.getPropertyValue("general", "currency.uom.id.default");
+                otherCurrencyUomId = EntityUtilProperties.getPropertyValue("general", "currency.uom.id.default", delegator);
             }
             if (otherCurrencyUomId == null) {
                 otherCurrencyUomId = "USD"; // final default

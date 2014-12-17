@@ -29,7 +29,7 @@ if (context.noConditionFind == null) {
 if (context.filterByDate == null) {
     context.filterByDate = parameters.filterByDate;
 }
-prepareResult = dispatcher.runSync("prepareFind", [entityName : context.entityName,
+prepareResult = runService('prepareFind', [entityName : context.entityName,
                                                    orderBy : context.orderBy,
                                                    inputFields : parameters,
                                                    filterByDate : context.filterByDate,
@@ -49,7 +49,7 @@ if (prepareResult.entityConditionList != null) {
     entityConditionList = statusPartyDisable;
 }
 
-executeResult = dispatcher.runSync("executeFind", [entityName : context.entityName,
+executeResult = runService('executeFind', [entityName : context.entityName,
                                                    orderByList : prepareResult.orderByList,
                                                    entityConditionList : entityConditionList,
                                                    noConditionFind :context.noConditionFind

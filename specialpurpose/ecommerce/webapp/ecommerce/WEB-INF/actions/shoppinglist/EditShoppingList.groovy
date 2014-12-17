@@ -93,11 +93,8 @@ if (shoppingListId) {
 
                 product = shoppingListItem.getRelatedOne("Product", true);
 
-                calcPriceInMap = [product : product, quantity : shoppingListItem.quantity, currencyUomId : currencyUomId, userLogin : userLogin];
-                calcPriceInMap.webSiteId = webSiteId;
-                calcPriceInMap.prodCatalogId = prodCatalogId;
-                calcPriceInMap.productStoreId = productStoreId;
-                calcPriceOutMap = dispatcher.runSync("calculateProductPrice", calcPriceInMap);
+                calcPriceOutMap = runService('calculateProductPrice', [product : product, quantity : shoppingListItem.quantity, currencyUomId : currencyUomId, userLogin : userLogin,
+                    webSiteId: webSiteId, prodCatalogId: prodCatalogId, productStoreId: productStoreId]);
                 price = calcPriceOutMap.price;
                 totalPrice = price * shoppingListItem.quantity;
                 // similar code at ShoppingCartItem.java getRentalAdjustment
@@ -145,7 +142,7 @@ if (shoppingListId) {
             context.shoppingListItemDatas = shoppingListItemDatas;
             // pagination for the shopping list
             viewIndex = Integer.valueOf(parameters.VIEW_INDEX  ?: 1);
-            viewSize = Integer.valueOf(parameters.VIEW_SIZE ?: UtilProperties.getPropertyValue("widget", "widget.form.defaultViewSize", "20"));
+            viewSize = Integer.valueOf(parameters.VIEW_SIZE ?: EntityUtilProperties.getPropertyValue("widget", "widget.form.defaultViewSize", "20", delegator));
             listSize = shoppingListItemDatas ? shoppingListItemDatas.size() : 0;
 
             lowIndex = ((viewIndex - 1) * viewSize) + 1;
@@ -171,8 +168,7 @@ if (shoppingListId) {
             childShoppingLists.each { childShoppingList ->
                 childShoppingListData = [:];
 
-                calcListPriceInMap = [shoppingListId : childShoppingList.shoppingListId, prodCatalogId : prodCatalogId, webSiteId : webSiteId, userLogin : userLogin, currencyUomId : currencyUomId];
-                childShoppingListPriceMap = dispatcher.runSync("calculateShoppingListDeepTotalPrice", calcListPriceInMap);
+                childShoppingListPriceMap = runService('calculateShoppingListDeepTotalPrice', [shoppingListId : childShoppingList.shoppingListId, prodCatalogId : prodCatalogId, webSiteId : webSiteId, userLogin : userLogin, currencyUomId : currencyUomId]);
                 totalPrice = childShoppingListPriceMap.totalPrice;
                 shoppingListChildTotal += totalPrice;
 

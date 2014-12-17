@@ -21,7 +21,7 @@ import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.base.util.UtilHttp;
 import org.ofbiz.product.catalog.CatalogWorker;
 import org.ofbiz.webapp.website.WebSiteWorker;
-import org.ofbiz.base.util.UtilProperties ;
+import org.ofbiz.entity.util.EntityUtilProperties;
 
 
 prodCatalogId = CatalogWorker.getCurrentCatalogId(request);
@@ -83,8 +83,7 @@ if (shoppingListId) {
                 product = shoppingListItem.getRelatedOne("Product", true);
 
                 // DEJ20050704 not sure about calculating price here, will have some bogus data when not in a store webapp
-                calcPriceInMap = [product : product, quantity : shoppingListItem.quantity , currencyUomId : currencyUomId, userLogin : userLogin, productStoreId : shoppingList.productStoreId];
-                calcPriceOutMap = dispatcher.runSync("calculateProductPrice", calcPriceInMap);
+                calcPriceOutMap = runService('calculateProductPrice', [product : product, quantity : shoppingListItem.quantity , currencyUomId : currencyUomId, userLogin : userLogin, productStoreId : shoppingList.productStoreId]);
                 price = calcPriceOutMap.price;
                 totalPrice = price * shoppingListItem.getDouble("quantity");
                 shoppingListItemTotal += totalPrice;
@@ -105,7 +104,7 @@ if (shoppingListId) {
             context.shoppingListItemDatas = shoppingListItemDatas;
             // pagination for the shopping list
             viewIndex = Integer.valueOf(parameters.VIEW_INDEX  ?: 0);
-            viewSize = Integer.valueOf(parameters.VIEW_SIZE ?: UtilProperties.getPropertyValue("widget", "widget.form.defaultViewSize", "20"));
+            viewSize = Integer.valueOf(parameters.VIEW_SIZE ?: EntityUtilProperties.getPropertyValue("widget", "widget.form.defaultViewSize", "20", delegator));
             listSize = shoppingListItemDatas ? shoppingListItemDatas.size() : 0;
 
             lowIndex = (viewIndex * viewSize) + 1;

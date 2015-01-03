@@ -20,6 +20,8 @@ package org.ofbiz.widget.tree;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -853,6 +855,24 @@ public class ModelTree extends ModelWidget {
                 for (Element parameterElement: parameterElementList) {
                     this.parameterList.add(new WidgetWorker.Parameter(parameterElement));
                 }
+            }
+
+            public Link(ModelTree.ModelNode.Link linkElement) {
+                this.textExdr = linkElement.textExdr;
+                this.idExdr = linkElement.idExdr;
+                this.styleExdr = linkElement.styleExdr;
+                this.targetExdr = linkElement.targetExdr;
+                this.targetWindowExdr = linkElement.targetWindowExdr;
+                this.prefixExdr = linkElement.prefixExdr;
+                this.urlMode = linkElement.urlMode;
+                this.fullPath = linkElement.fullPath;
+                this.secure = linkElement.secure;
+                this.encode = linkElement.encode;
+                this.nameExdr = linkElement.nameExdr;
+                this.titleExdr = linkElement.titleExdr;
+                this.linkType = linkElement.linkType;
+                this.parameterList = new ArrayList<WidgetWorker.Parameter>(linkElement.parameterList.size());
+                Collections.copy(this.parameterList, linkElement.parameterList);
             }
 
             public void renderLinkString(Appendable writer, Map<String, Object> context, TreeStringRenderer treeStringRenderer) {
